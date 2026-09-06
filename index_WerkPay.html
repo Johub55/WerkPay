@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <title>WerkPay Bank - Dashboard</title>
+    <script src="https://unpkg.com"></script>
+    <style>
+        :root { --bg: #111827; --panel: #1f2937; --red: #ef4444; --green: #10b981; --text: #f9fafb; --border: #374151; }
+        body { font-family: sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 0; }
+        .header { background: var(--panel); padding: 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--border); }
+        .nav-tabs { display: flex; padding: 5px 20px 0; background: var(--bg); border-bottom: 1px solid var(--border); }
+        .tab { padding: 10px 20px; cursor: pointer; background: var(--panel); border: 1px solid var(--border); border-bottom: none; margin-right: 5px; font-weight: bold; }
+        .tab.active { background: var(--red); }
+        .container { padding: 20px; max-width: 1100px; margin: 0 auto; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .card { background: var(--panel); border: 1px solid var(--border); padding: 20px; border-radius: 8px; }
+        input, select { width: 100%; padding: 10px; background: var(--bg); border: 1px solid var(--border); color: white; border-radius: 5px; margin-bottom: 15px; box-sizing: border-box; }
+        button { width: 100%; padding: 12px; background: var(--red); color: white; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; }
+        .atm-card { background: linear-gradient(135deg, #1e293b, #0f172a); padding: 20px; border-radius: 12px; border: 1px solid #475569; }
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+
+<div id="loginScreen" class="container card" style="max-width: 350px; margin: 100px auto; text-align: center;">
+    <h1>Werk<span style="color:var(--red)">Pay</span> 🔒</h1>
+    <input type="text" id="loginUser" placeholder="Gebruikersnaam">
+    <input type="password" id="loginPass" placeholder="Wachtwoord">
+    <button onclick="handleLogin()">Inloggen</button>
+</div>
+
+<div id="mainApp" class="hidden">
+    <div class="header">
+        <h2>Werk<span style="color:var(--red)">Pay Dashboard</span></h2>
+        <div><span id="welcomeText" style="margin-right:15px"></span><button onclick="handleLogout()" style="width:auto; background:#4b5563;">Uitloggen</button></div>
+    </div>
+    <div class="nav-tabs">
+        <div id="tabWallet" class="tab active" onclick="switchTab('wallet')">💳 Portemonnee</div>
+        <div id="tabAdmin" class="tab hidden" onclick="switchTab('admin')">📊 Manager</div>
+    </div>
+    <div class="container">
+        <div id="viewWallet" class="grid">
+            <div class="card">
+                <h3>Jouw Digitale Bankpas</h3>
+                <div class="atm-card">
+                    <div style="color: var(--red); font-weight: bold;">WerkPay Premium</div>
+                    <h2 id="lblBalance" style="color: var(--green); margin: 10px 0;">€0,00</h2>
+                    <div id="lblHolder" style="text-transform: uppercase;"></div>
+                    <div id="lblUid" style="font-size: 12px; color: #9ca3af; margin-top: 10px;"></div>
+                </div>
+            </div>
+            <div class="card">
+                <h3>➕ Saldo Opwaarderen</h3>
+                <input type="number" id="txtDeposit" placeholder="Bedrag in €">
+                <button style="background: var(--green)" onclick="handleDeposit()">Geld Storten</button>
+            </div>
+        </div>
+        <div id="viewAdmin" class="card hidden">
+            <h3>👥 Gebruikers Beheer</h3>
+            <div class="grid">
+                <div>
+                    <input type="text" id="regUser" placeholder="Gebruikersnaam">
+                    <input type="password" id="regPass" placeholder="Wachtwoord">
+                    <input type="text" id="regHolder" placeholder="Volledige naam">
+                    <input type="text" id="regUid" placeholder="RFID UID (Optioneel)">
+                    <input type="text" id="regPin" placeholder="Pincode (4 cijfers)" maxlength="4">
+                    <select id="regIsAdmin">
+                        <option value="false">Klant (Normaal)</option>
+                        <option value="true">Manager (Admin)</option>
+                    </select>
+                    <button style="background:var(--green)" onclick="handleCreateUser()">Gebruiker Opslaan</button>
+                </div>
+                <div>
+                    <button style="background:#374151; margin-bottom:10px;" onclick="loadAllAccounts()">🔄 Lijst Verversen</button>
+                    <div id="accountsList" style="max-height: 350px; overflow-y: auto;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const url = "https://kpanjikwllhcyzqaxgqh.supabase.co/";
+    const key = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtwYW5qaWt3bGxoY3l6cWF4Z3FoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg2MTQ5OTAsImV4cCI6MjEwNDE5MDk5MH0.K3iatTgzsDREoGB2bBElCzDThhgaKC2z0H7ZxLwVJm8";
+    const _db = supabase.createClient(url, key);
+    let user = null;
+
+    async function handleLogin() {
+        const u = document.getElementById('loginUser').value.trim();
+        const p = document.getElementById('loginPass').value.trim();
+        if(!u || !p) { alert("Vul alle velden in!"); return; }
+        
+        try {
+            const { data, error } = await _db.from('bank_accounts').select('*').eq('username', u).eq('password', p).single();
+            if (error || !data) { alert("Inloggen mislukt: Onjuiste gebruikersnaam of wachtwoord!"); return; }
+            user = data; 
+            showDashboard();
+        } catch(err) {
+            alert("Verbindingsfout! Controleer of je internet hebt en of de database-tabel bestaat.");
+        }
+    }
+
+    function showDashboard() {
+        document.getElementById('loginScreen').classList.add('hidden');
+        document.getElementById('mainApp').classList.remove('hidden');
+        document.getElementById('welcomeText').innerText = user.account_holder;
+        document.getElementById('lblHolder').innerText = user.account_holder;
+        document.getElementById('lblBalance').innerText = `€${parseFloat(user.balance).toFixed(2)}`;
+        document.getElementById('lblUid').innerText = user.card_uid ? `UID: ${user.card_uid}` : "Geen pas gekoppeld";
+        if (user.is_admin) { document.getElementById('tabAdmin').classList.remove('hidden'); loadAllAccounts(); }
+        switchTab('wallet');
+    }
+
+    function switchTab(t) {
+        document.getElementById('tabWallet').classList.toggle('active', t === 'wallet');
+        document.getElementById('tabAdmin').classList.toggle('active', t === 'admin');
+        document.getElementById('viewWallet').classList.toggle('hidden', t !== 'wallet');
+        document.getElementById('viewAdmin').classList.toggle('hidden', t !== 'admin');
+    }
+
+    async function handleDeposit() {
+        const amt = parseFloat(document.getElementById('txtDeposit').value);
+        if (isNaN(amt) || amt <= 0) return;
+        const { data } = await _db.from('bank_accounts').update({ balance: parseFloat(user.balance) + amt }).eq('id', user.id).select().single();
+        if (data) { user = data; showDashboard(); document.getElementById('txtDeposit').value = ""; alert("Gestort!"); }
+    }
+
+    async function handleCreateUser() {
+        const username = document.getElementById('regUser').value.trim();
+        const password = document.getElementById('regPass').value.trim();
+        const account_holder = document.getElementById('regHolder').value.trim();
+        const card_uid = document.getElementById('regUid').value.trim().toUpperCase() || null;
+        const pin_code = document.getElementById('regPin').value.trim() || null;
+        const is_admin = document.getElementById('regIsAdmin').value === "true";
+        if(!username || !password || !account_holder) return;
+        const { error } = await _db.from('bank_accounts').insert([{ username, password, account_holder, card_uid, pin_code, is_admin }]);
+        if (!error) { alert("Toegevoegd!"); loadAllAccounts(); }
+    }
+
+    async function loadAllAccounts() {
+        const { data } = await _db.from('bank_accounts').select('*').order('username');
+        if (data) {
+            const list = document.getElementById('accountsList'); list.innerHTML = "";
+            data.forEach(a => {
+                list.innerHTML += `<div style='padding:8px; border-bottom:1px solid var(--border); background:#111827; margin-bottom:5px;'>
+                    <strong>${a.account_holder}</strong> (${a.username})<br>Saldo: <span style='color:var(--green)'>€${parseFloat(a.balance).toFixed(2)}</span>
+                </div>`;
+            });
+        }
+    }
+
+    function handleLogout() {
+        user = null; document.getElementById('mainApp').classList.add('hidden'); document.getElementById('loginScreen').classList.remove('hidden');
+    }
+</script>
+</body>
+</html>
+
