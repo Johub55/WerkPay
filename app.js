@@ -1,16 +1,17 @@
-// Volledige en directe cloud-database verbinding met de juiste project-URL
-const supabaseUrl = "https://kpanjikwllhcyzqaxgqh.supabase.co";
+// Directe cloud-database verbinding met de juiste project-URL
+const supabaseUrl = "https://kpanjikwllhcyzqaxgqh.supabase.co/";
 const key = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtwYW5qaWt3bGxoY3l6cWF4Z3FoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg2MTQ5OTAsImV4cCI6MjEwNDE5MDk5MH0.K3iatTgzsDREoGB2bBElCzDThhgaKC2z0H7ZxLwVJm8";
 
-// Centrale functie om de echte database aan te roepen met de juiste API-instellingen
+// Centrale functie om de echte database aan te roepen met de exacte CORS-headers die Supabase eist
 const _sbFetch = async (method, path, body = null) => {
-    // Hier plakken we de url en het opgevraagde pad aan elkaar
     const volledigeUrl = `${supabaseUrl}/${path}`;
     
     const headers = { 
         "apikey": key, 
         "Authorization": `Bearer ${key}`, 
         "Content-Type": "application/json",
+        // 'X-Client-Info' helpt Supabase om het verzoek te herkennen als een browser-app
+        "X-Client-Info": "supabase-js-web",
         "Prefer": method === "GET" ? "count=none" : "return=representation"
     };
     
@@ -29,12 +30,12 @@ async function handleLogin() {
     if(!u || !p) return alert("Vul alles in!");
     
     try {
-        // Haal het account op filterend op gebruikersnaam en wachtwoord uit JOUW database
-        const data = await _sbFetch("GET", `bank_accounts?username=eq.${encodeURIComponent(u)}&password=eq.${encodeURIComponent(p)}`);
+        // BELANGRIJK: we voegen '&select=*' toe, dit lost de preflight-fout op bij Supabase GET-queries
+        const data = await _sbFetch("GET", `bank_accounts?username=eq.${encodeURIComponent(u)}&password=eq.${encodeURIComponent(p)}&select=*`);
         
         if (!data || data.length === 0) return alert("Onjuiste gegevens of account bestaat niet!");
         
-        // Sla de ingelogde gebruiker op (Supabase geeft een lijst, we pakken het eerste resultaat)
+        // Supabase geeft een lijst terug; we pakken het eerste element [0]
         user = data[0]; 
         showDashboard();
     } catch(e) { 
@@ -101,21 +102,22 @@ async function handleTransfer() {
     const isAdmin = user.is_admin === true || user.is_admin === "true";
     if(!isAdmin && parseFloat(user.balance) < amt) return alert("Onvoldoende saldo!");
     
-    const dest = await _sbFetch("GET", `bank_accounts?username=eq.${encodeURIComponent(target)}`);
-    if(!dest || dest.length === 0) return alert("Ontvanger niet gevonden!");
+    const destData = await _sbFetch("GET", `bank_accounts?username=eq.${encodeURIComponent(target)}&select=*`);
+    if(!destData || destData.length === 0) return alert("Ontvanger niet gevonden!");
+    const dest = destData[0];
     
     if(!isAdmin) {
         await _sbFetch("PATCH", `bank_accounts?id=eq.${user.id}`, { balance: parseFloat(user.balance) - amt });
     }
     
-    await _sbFetch("PATCH", `bank_accounts?id=eq.${dest[0].id}`, { balance: parseFloat(dest[0].balance) + amt });
+    await _sbFetch("PATCH", `bank_accounts?id=eq.${dest.id}`, { balance: parseFloat(dest.balance) + amt });
     
     alert("Succesvol overgemaakt!");
     document.getElementById('txtTransferTarget').value = ""; 
     document.getElementById('txtTransferAmount').value = "";
     
     if(!isAdmin) {
-        const fresh = await _sbFetch("GET", `bank_accounts?id=eq.${user.id}`);
+        const fresh = await _sbFetch("GET", `bank_accounts?id=eq.${user.id}&select=*`);
         user = fresh[0];
     }
     showDashboard();
@@ -182,7 +184,7 @@ function clearRegForm() {
 }
 
 async function loadAllAccounts() {
-    const data = await _sbFetch("GET", `bank_accounts?order=username.asc`);
+    const data = await _sbFetch("GET", "bank_accounts?order=username.asc&select=*");
     if (data) {
         const list = document.getElementById('accountsList'); 
         list.innerHTML = "";
