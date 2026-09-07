@@ -1,15 +1,19 @@
-// Directe database initialisatie met de officiële Supabase SDK
-const supabaseUrl = "https://supabase.co";
-const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtwYW5qaWt3bGxoY3l6cWF4Z3FoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg2MTQ5OTAsImV4cCI6MjEwNDE5MDk5MH0.K3iatTgzsDREoGB2bBElCzDThhgaKC2z0H7ZxLwVJm8";
-const _db = supabase.createClient(supabaseUrl, supabaseKey);
-
+let _db = null;
 let user = null;
+
+// Wacht tot de browser alle externe scripts (zoals Supabase) volledig heeft ingeladen
+window.onload = function() {
+    const supabaseUrl = "https://supabase.co";
+    const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtwYW5qaWt3bGxoY3l6cWF4Z3FoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg2MTQ5OTAsImV4cCI6MjEwNDE5MDk5MH0.K3iatTgzsDREoGB2bBElCzDThhgaKC2z0H7ZxLwVJm8";
+    _db = supabase.createClient(supabaseUrl, supabaseKey);
+};
 
 // 1. INLOGGEN
 async function handleLogin() {
     const u = document.getElementById('loginUser').value.trim();
     const p = document.getElementById('loginPass').value.trim();
     if(!u || !p) return alert("Vul alle velden in!");
+    if(!_db) return alert("Database laadt nog, wacht een seconde...");
     
     try {
         const { data, error } = await _db.from('bank_accounts').select('*').eq('username', u).eq('password', p).maybeSingle();
