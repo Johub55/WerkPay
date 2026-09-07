@@ -1,10 +1,19 @@
-const url = "https://supabase.co", key = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtwYW5qaWt3bGxoY3l6cWF4Z3FoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg2MTQ5OTAsImV4cCI6MjEwNDE5MDk5MH0.K3iatTgzsDREoGB2bBElCzDThhgaKC2z0H7ZxLwVJm8";
-const _db = supabase.createClient(url, key);
+let _db = null;
 let user = null;
 
+// Wacht tot de browser de Supabase link volledig heeft ingeladen
+window.onload = function() {
+    const url = "https://supabase.co";
+    const key = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtwYW5qaWt3bGxoY3l6cWF4Z3FoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg2MTQ5OTAsImV4cCI6MjEwNDE5MDk5MH0.K3iatTgzsDREoGB2bBElCzDThhgaKC2z0H7ZxLwVJm8";
+    _db = supabase.createClient(url, key);
+};
+
 async function handleLogin() {
-    const u = document.getElementById('loginUser').value.trim(), p = document.getElementById('loginPass').value.trim();
+    const u = document.getElementById('loginUser').value.trim();
+    const p = document.getElementById('loginPass').value.trim();
     if(!u || !p) return alert("Vul alles in!");
+    if(!_db) return alert("Database laadt nog, wacht een seconde...");
+    
     const { data, error } = await _db.from('bank_accounts').select('*').eq('username', u).eq('password', p).single();
     if (error || !data) return alert("Onjuiste gegevens!");
     user = data; showDashboard();
@@ -45,7 +54,8 @@ async function handleDeposit() {
 }
 
 async function handleTransfer() {
-    const target = document.getElementById('txtTransferTarget').value.trim(), amt = parseFloat(document.getElementById('txtTransferAmount').value);
+    const target = document.getElementById('txtTransferTarget').value.trim();
+    const amt = parseFloat(document.getElementById('txtTransferAmount').value);
     if(!target || isNaN(amt) || amt <= 0) return alert("Vul geldige gegevens in!");
     if(!user.is_admin && parseFloat(user.balance) < amt) return alert("Onvoldoende saldo!");
     
@@ -65,7 +75,15 @@ async function handleTransfer() {
 }
 
 async function handleCreateOrUpdateUser() {
-    const id = document.getElementById('editUserId').value, username = document.getElementById('regUser').value.trim(), password = document.getElementById('regPass').value.trim(), account_holder = document.getElementById('regHolder').value.trim(), card_uid = document.getElementById('regUid').value.trim().toUpperCase() || null, pin_code = document.getElementById('regPin').value.trim() || null, balance = parseFloat(document.getElementById('regBalance').value) || 0, is_admin = document.getElementById('regIsAdmin').value === "true";
+    const id = document.getElementById('editUserId').value;
+    const username = document.getElementById('regUser').value.trim();
+    const password = document.getElementById('regPass').value.trim();
+    const account_holder = document.getElementById('regHolder').value.trim();
+    const card_uid = document.getElementById('regUid').value.trim().toUpperCase() || null;
+    const pin_code = document.getElementById('regPin').value.trim() || null;
+    const balance = parseFloat(document.getElementById('regBalance').value) || 0;
+    const is_admin = document.getElementById('regIsAdmin').value === "true";
+    
     if(!username || !password || !account_holder) return alert("Vul verplichte velden in!");
     const p = { username, password, account_holder, card_uid, pin_code, balance, is_admin };
     const res = id ? await _db.from('bank_accounts').update(p).eq('id', id) : await _db.from('bank_accounts').insert([p]);
@@ -75,23 +93,52 @@ async function handleCreateOrUpdateUser() {
 function editUser(accJson) {
     const acc = JSON.parse(decodeURIComponent(accJson));
     document.getElementById('adminFormTitle').innerText = `${acc.account_holder} Aanpassen`;
-    document.getElementById('editUserId').value = acc.id; document.getElementById('regUser').value = acc.username; document.getElementById('regPass').value = acc.password; document.getElementById('regHolder').value = acc.account_holder; document.getElementById('regUid').value = acc.card_uid || ""; document.getElementById('regPin').value = acc.pin_code || ""; document.getElementById('regBalance').value = acc.balance; document.getElementById('regIsAdmin').value = acc.is_admin ? "true" : "false";
-    document.getElementById('btnCancelEdit').classList.remove('hidden'); toggleAdminField();
+    document.getElementById('editUserId').value = acc.id; 
+    document.getElementById('regUser').value = acc.username; 
+    document.getElementById('regPass').value = acc.password; 
+    document.getElementById('regHolder').value = acc.account_holder; 
+    document.getElementById('regUid').value = acc.card_uid || ""; 
+    document.getElementById('regPin').value = acc.pin_code || ""; 
+    document.getElementById('regBalance').value = acc.balance; 
+    document.getElementById('regIsAdmin').value = acc.is_admin ? "true" : "false";
+    document.getElementById('btnCancelEdit').classList.remove('hidden'); 
+    toggleAdminField();
 }
 
 async function quickMoney(id, cur, amt) {
-    await _db.from('bank_accounts').update({ balance: parseFloat(cur) + amt }).eq('id', id); loadAllAccounts();
+    await _db.from('bank_accounts').update({ balance: parseFloat(cur) + amt }).eq('id', id); 
+    loadAllAccounts();
 }
 
-function cancelEdit() { document.getElementById('adminFormTitle').innerText = "👥 Gebruiker Toevoegen / Aanpassen"; document.getElementById('editUserId').value = ""; clearRegForm(); document.getElementById('btnCancelEdit').classList.add('hidden'); }
-/* Korte helper functies voor reset en logout */
-function clearRegForm() { document.getElementById('regUser').value = ""; document.getElementById('regPass').value = ""; document.getElementById('regHolder').value = ""; document.getElementById('regUid').value = ""; document.getElementById('regPin').value = ""; document.getElementById('regBalance').value = "0"; document.getElementById('regIsAdmin').value = "false"; toggleAdminField(); }
-function handleLogout() { user = null; document.getElementById('mainApp').classList.add('hidden'); document.getElementById('loginScreen').classList.remove('hidden'); }
+function cancelEdit() { 
+    document.getElementById('adminFormTitle').innerText = "👥 Gebruiker Toevoegen / Aanpassen"; 
+    document.getElementById('editUserId').value = ""; 
+    clearRegForm(); 
+    document.getElementById('btnCancelEdit').classList.add('hidden'); 
+}
+
+function clearRegForm() { 
+    document.getElementById('regUser').value = ""; 
+    document.getElementById('regPass').value = ""; 
+    document.getElementById('regHolder').value = ""; 
+    document.getElementById('regUid').value = ""; 
+    document.getElementById('regPin').value = ""; 
+    document.getElementById('regBalance').value = "0"; 
+    document.getElementById('regIsAdmin').value = "false"; 
+    toggleAdminField(); 
+}
+
+function handleLogout() { 
+    user = null; 
+    document.getElementById('mainApp').classList.add('hidden'); 
+    document.getElementById('loginScreen').classList.remove('hidden'); 
+}
 
 async function loadAllAccounts() {
     const { data } = await _db.from('bank_accounts').select('*').order('username');
     if (data) {
-        const list = document.getElementById('accountsList'); list.innerHTML = "";
+        const list = document.getElementById('accountsList'); 
+        list.innerHTML = "";
         data.forEach(a => {
             const bal = a.is_admin ? "∞" : `€${parseFloat(a.balance).toFixed(2)}`;
             const qB = a.is_admin ? "" : `<br><button class="btn-sm" style="background:var(--green)" onclick="quickMoney('${a.id}',${a.balance},10)">+ €10</button><button class="btn-sm" style="background:var(--red)" onclick="quickMoney('${a.id}',${a.balance},-10)">- €10</button>`;
