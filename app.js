@@ -1,24 +1,18 @@
-// corsproxy.io lost de CORS-fouten in de browser direct en permanent op!
-const corsProxy = "https://corsproxy.io/?";
+const corsProxy = "https://corsproxy.io?";
 const supabaseUrl = "https://supabase.co";
 const key = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtwYW5qaWt3bGxoY3l6cWF4Z3FoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg2MTQ5OTAsImV4cCI6MjEwNDE5MDk5MH0.K3iatTgzsDREoGB2bBElCzDThhgaKC2z0H7ZxLwVJm8";
 
-// Centrale functie om de echte database aan te roepen via de CORS proxy
 const _sbFetch = async (method, path, body = null) => {
-    // We sturen het verzoek via corsproxy.io naar de echte Supabase URL
     const volledigeUrl = corsProxy + encodeURIComponent(`${supabaseUrl}/${path}`);
-    
     const headers = { 
         "apikey": key, 
         "Authorization": `Bearer ${key}`, 
         "Content-Type": "application/json",
         "Prefer": method === "GET" ? "count=none" : "return=representation"
     };
-    
     const config = { method, headers };
     if (body) config.body = JSON.stringify(body);
-    
-    const res = await fetch(volledigeUrl, config);
+    const res = await fetch(fullUrl, config);
     return res.json();
 };
 
@@ -30,23 +24,20 @@ async function handleLogin() {
     if(!u || !p) return alert("Vul alles in!");
     
     try {
-        // Haal het account op uit de cloud via de CORS proxy
         const data = await _sbFetch("GET", `bank_accounts?username=eq.${encodeURIComponent(u)}&password=eq.${encodeURIComponent(p)}&select=*`);
-        
         if (!data || data.length === 0) return alert("Onjuiste gegevens of account bestaat niet!");
         
-        // Supabase geeft een lijst terug; pak het eerste element
+        // FIX: Supabase geeft een Array terug, we pakken de eerste gebruiker [0]
         user = data[0]; 
         showDashboard();
     } catch(e) { 
-        alert("Fout bij het verbinden met de cloud-database via de CORS proxy!"); 
+        alert("Fout bij het verbinden met de cloud-database!"); 
     }
 }
 
 function showDashboard() {
     document.getElementById('loginScreen').classList.add('hidden');
     document.getElementById('mainApp').classList.remove('hidden');
-    
     const isAdmin = user.is_admin === true || user.is_admin === "true";
     document.getElementById('welcomeText').innerText = user.account_holder + (isAdmin ? " (Admin)" : "");
     document.getElementById('lblHolder').innerText = user.account_holder;
@@ -72,20 +63,16 @@ function toggleAdminField() {
 }
 
 async function handleDeposit() {
-    const isAdmin = user.is_admin === true || user.is_admin === "true";
-    if(isAdmin) return alert("Je hebt al oneindig geld!");
+    if(user.is_admin) return alert("Je hebt al oneindig geld!");
     const amt = parseFloat(document.getElementById('txtDeposit').value);
     if (isNaN(amt) || amt <= 0) return;
-    
     const res = await _sbFetch("PATCH", `bank_accounts?id=eq.${user.id}`, { balance: parseFloat(user.balance) + amt });
     if (res && res.length > 0) { user = res[0]; showDashboard(); document.getElementById('txtDeposit').value = ""; }
 }
 
 async function handleTransfer() {
-    const target = document.getElementById('txtTransferTarget').value.trim();
-    const amt = parseFloat(document.getElementById('txtTransferAmount').value);
+    const target = document.getElementById('txtTransferTarget').value.trim(), amt = parseFloat(document.getElementById('txtTransferAmount').value);
     if(!target || isNaN(amt) || amt <= 0) return alert("Vul geldige gegevens in!");
-    
     const isAdmin = user.is_admin === true || user.is_admin === "true";
     if(!isAdmin && parseFloat(user.balance) < amt) return alert("Onvoldoende saldo!");
     
@@ -97,13 +84,8 @@ async function handleTransfer() {
     await _sbFetch("PATCH", `bank_accounts?id=eq.${dest.id}`, { balance: parseFloat(dest.balance) + amt });
     
     alert("Succesvol overgemaakt!");
-    document.getElementById('txtTransferTarget').value = ""; 
-    document.getElementById('txtTransferAmount').value = "";
-    
-    if(!isAdmin) {
-        const fresh = await _sbFetch("GET", `bank_accounts?id=eq.${user.id}&select=*`);
-        user = fresh[0];
-    }
+    document.getElementById('txtTransferTarget').value = ""; document.getElementById('txtTransferAmount').value = "";
+    if(!isAdmin) { const fresh = await _sbFetch("GET", `bank_accounts?id=eq.${user.id}&select=*`); user = fresh[0]; }
     showDashboard();
 }
 
@@ -111,7 +93,6 @@ async function handleCreateOrUpdateUser() {
     const id = document.getElementById('editUserId').value, username = document.getElementById('regUser').value.trim(), password = document.getElementById('regPass').value.trim(), account_holder = document.getElementById('regHolder').value.trim(), card_uid = document.getElementById('regUid').value.trim().toUpperCase() || null, pin_code = document.getElementById('regPin').value.trim() || null, balance = parseFloat(document.getElementById('regBalance').value) || 0, is_admin = document.getElementById('regIsAdmin').value === "true";
     if(!username || !password || !account_holder) return alert("Vul verplichte velden in!");
     const p = { username, password, account_holder, card_uid, pin_code, balance, is_admin };
-    
     const res = id ? await _sbFetch("PATCH", `bank_accounts?id=eq.${id}`, p) : await _sbFetch("POST", `bank_accounts`, p);
     if (res) { alert("Opgeslagen!"); cancelEdit(); loadAllAccounts(); }
 }
