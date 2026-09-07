@@ -1,6 +1,26 @@
-const url = "https://kpanjikwllhcyzqaxgqh.supabase.co";
+// corsproxy.io lost de CORS-fouten in de browser direct en permanent op!
+const corsProxy = "https://corsproxy.io/?";
+const supabaseUrl = "https://supabase.co";
 const key = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtwYW5qaWt3bGxoY3l6cWF4Z3FoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg2MTQ5OTAsImV4cCI6MjEwNDE5MDk5MH0.K3iatTgzsDREoGB2bBElCzDThhgaKC2z0H7ZxLwVJm8";
-const _db = supabase.createClient(url, key);
+
+// Centrale functie om de echte database aan te roepen via de CORS proxy
+const _sbFetch = async (method, path, body = null) => {
+    // We sturen het verzoek via corsproxy.io naar de echte Supabase URL
+    const volledigeUrl = corsProxy + encodeURIComponent(`${supabaseUrl}/${path}`);
+    
+    const headers = { 
+        "apikey": key, 
+        "Authorization": `Bearer ${key}`, 
+        "Content-Type": "application/json",
+        "Prefer": method === "GET" ? "count=none" : "return=representation"
+    };
+    
+    const config = { method, headers };
+    if (body) config.body = JSON.stringify(body);
+    
+    const res = await fetch(volledigeUrl, config);
+    return res.json();
+};
 
 let user = null;
 
@@ -10,12 +30,16 @@ async function handleLogin() {
     if(!u || !p) return alert("Vul alles in!");
     
     try {
-        const { data, error } = await _db.from('bank_accounts').select('*').eq('username', u).eq('password', p).maybeSingle();
-        if (error || !data) return alert("Onjuiste gegevens of account bestaat niet!");
-        user = data; 
+        // Haal het account op uit de cloud via de CORS proxy
+        const data = await _sbFetch("GET", `bank_accounts?username=eq.${encodeURIComponent(u)}&password=eq.${encodeURIComponent(p)}&select=*`);
+        
+        if (!data || data.length === 0) return alert("Onjuiste gegevens of account bestaat niet!");
+        
+        // Supabase geeft een lijst terug; pak het eerste element
+        user = data[0]; 
         showDashboard();
     } catch(e) { 
-        alert("Fout bij het verbinden met de cloud-database!"); 
+        alert("Fout bij het verbinden met de cloud-database via de CORS proxy!"); 
     }
 }
 
@@ -48,33 +72,37 @@ function toggleAdminField() {
 }
 
 async function handleDeposit() {
-    if(user.is_admin) return alert("Je hebt al oneindig geld!");
+    const isAdmin = user.is_admin === true || user.is_admin === "true";
+    if(isAdmin) return alert("Je hebt al oneindig geld!");
     const amt = parseFloat(document.getElementById('txtDeposit').value);
     if (isNaN(amt) || amt <= 0) return;
     
-    const { data, error } = await _db.from('bank_accounts').update({ balance: parseFloat(user.balance) + amt }).eq('id', user.id).select().maybeSingle();
-    if (!error && data) { user = data; showDashboard(); document.getElementById('txtDeposit').value = ""; }
+    const res = await _sbFetch("PATCH", `bank_accounts?id=eq.${user.id}`, { balance: parseFloat(user.balance) + amt });
+    if (res && res.length > 0) { user = res[0]; showDashboard(); document.getElementById('txtDeposit').value = ""; }
 }
 
 async function handleTransfer() {
     const target = document.getElementById('txtTransferTarget').value.trim();
     const amt = parseFloat(document.getElementById('txtTransferAmount').value);
     if(!target || isNaN(amt) || amt <= 0) return alert("Vul geldige gegevens in!");
-    if(!user.is_admin && parseFloat(user.balance) < amt) return alert("Onvoldoende saldo!");
     
-    const { data: dest, error } = await _db.from('bank_accounts').select('*').eq('username', target).maybeSingle();
-    if(error || !dest) return alert("Ontvanger niet gevonden!");
-
-    if(!user.is_admin) await _db.from('bank_accounts').update({ balance: parseFloat(user.balance) - amt }).eq('id', user.id);
-    await _db.from('bank_accounts').update({ balance: parseFloat(dest.balance) + amt }).eq('id', dest.id);
+    const isAdmin = user.is_admin === true || user.is_admin === "true";
+    if(!isAdmin && parseFloat(user.balance) < amt) return alert("Onvoldoende saldo!");
+    
+    const destData = await _sbFetch("GET", `bank_accounts?username=eq.${encodeURIComponent(target)}&select=*`);
+    if(!destData || destData.length === 0) return alert("Ontvanger niet gevonden!");
+    const dest = destData[0];
+    
+    if(!isAdmin) await _sbFetch("PATCH", `bank_accounts?id=eq.${user.id}`, { balance: parseFloat(user.balance) - amt });
+    await _sbFetch("PATCH", `bank_accounts?id=eq.${dest.id}`, { balance: parseFloat(dest.balance) + amt });
     
     alert("Succesvol overgemaakt!");
     document.getElementById('txtTransferTarget').value = ""; 
     document.getElementById('txtTransferAmount').value = "";
     
-    if(!user.is_admin) {
-        const { data: fresh } = await _db.from('bank_accounts').select('*').eq('id', user.id).maybeSingle();
-        user = fresh;
+    if(!isAdmin) {
+        const fresh = await _sbFetch("GET", `bank_accounts?id=eq.${user.id}&select=*`);
+        user = fresh[0];
     }
     showDashboard();
 }
@@ -84,8 +112,8 @@ async function handleCreateOrUpdateUser() {
     if(!username || !password || !account_holder) return alert("Vul verplichte velden in!");
     const p = { username, password, account_holder, card_uid, pin_code, balance, is_admin };
     
-    const { error } = id ? await _db.from('bank_accounts').update(p).eq('id', id) : await _db.from('bank_accounts').insert([p]);
-    if (!error) { alert("Opgeslagen!"); cancelEdit(); loadAllAccounts(); }
+    const res = id ? await _sbFetch("PATCH", `bank_accounts?id=eq.${id}`, p) : await _sbFetch("POST", `bank_accounts`, p);
+    if (res) { alert("Opgeslagen!"); cancelEdit(); loadAllAccounts(); }
 }
 
 function editUser(accJson) {
@@ -96,14 +124,14 @@ function editUser(accJson) {
 }
 
 async function quickMoney(id, cur, amt) {
-    await _db.from('bank_accounts').update({ balance: parseFloat(cur) + amt }).eq('id', id); loadAllAccounts();
+    await _sbFetch("PATCH", `bank_accounts?id=eq.${id}`, { balance: parseFloat(cur) + amt }); loadAllAccounts();
 }
 
 function cancelEdit() { document.getElementById('adminFormTitle').innerText = "👥 Gebruiker Toevoegen / Aanpassen"; document.getElementById('editUserId').value = ""; clearRegForm(); document.getElementById('btnCancelEdit').classList.add('hidden'); }
 function clearRegForm() { document.getElementById('regUser').value = ""; document.getElementById('regPass').value = ""; document.getElementById('regHolder').value = ""; document.getElementById('regUid').value = ""; document.getElementById('regPin').value = ""; document.getElementById('regBalance').value = "0"; document.getElementById('regIsAdmin').value = "false"; toggleAdminField(); }
 
 async function loadAllAccounts() {
-    const { data } = await _db.from('bank_accounts').select('*').order('username');
+    const data = await _sbFetch("GET", "bank_accounts?order=username.asc&select=*");
     if (data) {
         const list = document.getElementById('accountsList'); list.innerHTML = "";
         data.forEach(a => {
