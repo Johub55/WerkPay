@@ -1,21 +1,16 @@
-// AllOrigins Proxy omzeilt de netwerkblokkade (ERR_NAME_NOT_RESOLVED) 
-// Hierdoor praat je app alsnog rechtstreeks met de ECHTE cloud-database!
-const proxyUrl = "https://allorigins.win";
-const supabaseUrl = "https://kpanjikwllhcyzqaxgqh.supabase.co/rest/v1";
+// Directe cloud-database verbinding zonder proxy
+const supabaseUrl = "https://supabase.co";
 const key = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtwYW5qaWt3bGxoY3l6cWF4Z3FoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg2MTQ5OTAsImV4cCI6MjEwNDE5MDk5MH0.K3iatTgzsDREoGB2bBElCzDThhgaKC2z0H7ZxLwVJm8";
 
-// Centrale functie om de echte database in de cloud aan te roepen
+// Centrale functie om de echte database in de cloud direct aan te roepen
 const _sbFetch = async (method, path, body = null) => {
-    // We sturen het verzoek via de proxy naar de echte Supabase URL
-    const volledigeUrl = proxyUrl + encodeURIComponent(`${supabaseUrl}/${path}`);
-    
+    const volledigeUrl = `${supabaseUrl}/${path}`;
     const headers = { 
         "apikey": key, 
         "Authorization": `Bearer ${key}`, 
         "Content-Type": "application/json", 
         "Prefer": "return=representation" 
     };
-    
     const config = { method, headers };
     if (body) config.body = JSON.stringify(body);
     
@@ -31,14 +26,14 @@ async function handleLogin() {
     if(!u || !p) return alert("Vul alles in!");
     
     try {
-        // Haal de echte gegevens op uit de cloud database
         const data = await _sbFetch("GET", `bank_accounts?username=eq.${encodeURIComponent(u)}&password=eq.${encodeURIComponent(p)}`);
-        if (!data || data.length === 0) return alert("Onjuiste gegevens!");
         
-        user = data[0]; // Pak de ingelogde gebruiker uit de database
+        if (!data || data.length === 0) return alert("Onjuiste gegevens of account bestaat niet!");
+        
+        user = data[0]; // Pak het eerste account uit de array resultaten
         showDashboard();
     } catch(e) { 
-        alert("Inlogfout bij cloud-database! Controleer je internet."); 
+        alert("Fout bij het direct verbinden met de cloud-database!"); 
     }
 }
 
@@ -46,7 +41,6 @@ function showDashboard() {
     document.getElementById('loginScreen').classList.add('hidden');
     document.getElementById('mainApp').classList.remove('hidden');
     
-    // Check of de ingelogde gebruiker een Admin is in de database
     const isAdmin = user.is_admin === true || user.is_admin === "true";
     
     document.getElementById('welcomeText').innerText = user.account_holder + (isAdmin ? " (Admin)" : "");
@@ -86,7 +80,6 @@ async function handleDeposit() {
     const amt = parseFloat(document.getElementById('txtDeposit').value);
     if (isNaN(amt) || amt <= 0) return;
     
-    // Update het saldo live in de database
     const res = await _sbFetch("PATCH", `bank_accounts?id=eq.${user.id}`, { balance: parseFloat(user.balance) + amt });
     if (res && res.length > 0) { 
         user = res[0]; 
@@ -103,19 +96,16 @@ async function handleTransfer() {
     const isAdmin = user.is_admin === true || user.is_admin === "true";
     if(!isAdmin && parseFloat(user.balance) < amt) return alert("Onvoldoende saldo!");
     
-    // Zoek de ontvanger in de database
     const dest = await _sbFetch("GET", `bank_accounts?username=eq.${encodeURIComponent(target)}`);
     if(!dest || dest.length === 0) return alert("Ontvanger niet gevonden!");
     
-    // Schrijf geld af bij zender (als het geen admin is)
     if(!isAdmin) {
         await _sbFetch("PATCH", `bank_accounts?id=eq.${user.id}`, { balance: parseFloat(user.balance) - amt });
     }
     
-    // Stort geld bij de ontvanger in de database
     await _sbFetch("PATCH", `bank_accounts?id=eq.${dest[0].id}`, { balance: parseFloat(dest[0].balance) + amt });
     
-    alert("Succesvol overgemaakt via de cloud!");
+    alert("Succesvol overgemaakt!");
     document.getElementById('txtTransferTarget').value = ""; 
     document.getElementById('txtTransferAmount').value = "";
     
@@ -140,10 +130,9 @@ async function handleCreateOrUpdateUser() {
     
     const p = { username, password, account_holder, card_uid, pin_code, balance, is_admin };
     
-    // Update bestaande rij of voeg een nieuwe gebruiker toe aan de cloud
     const res = id ? await _sbFetch("PATCH", `bank_accounts?id=eq.${id}`, p) : await _sbFetch("POST", `bank_accounts`, p);
     if (res) { 
-        alert("Gebruiker succesvol opgeslagen in de database!"); 
+        alert("Opgeslagen!"); 
         cancelEdit(); 
         loadAllAccounts(); 
     }
