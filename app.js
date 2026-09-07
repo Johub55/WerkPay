@@ -1,4 +1,4 @@
-const supabaseUrl = "https://kpanjikwllhcyzqaxgqh.supabase.co/;
+const supabaseUrl = "https://supabase.co";
 const key = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtwYW5qaWt3bGxoY3l6cWF4Z3FoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg2MTQ5OTAsImV4cCI6MjEwNDE5MDk5MH0.K3iatTgzsDREoGB2bBElCzDThhgaKC2z0H7ZxLwVJm8";
 
 const _sbFetch = async (method, path, body = null) => {
@@ -26,7 +26,7 @@ async function handleLogin() {
         const data = await _sbFetch("GET", `bank_accounts?username=eq.${encodeURIComponent(u)}&password=eq.${encodeURIComponent(p)}&select=*`);
         if (!data || data.length === 0) return alert("Onjuiste gegevens of account bestaat niet!");
         
-        user = data[0]; // Pak de eerste gebruiker uit de array
+        user = data[0]; 
         showDashboard();
     } catch(e) { 
         alert("Fout bij het direct verbinden met de cloud-database!"); 
