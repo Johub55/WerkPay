@@ -1,11 +1,9 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <link rel="icon" href="data:,">
     <meta charset="UTF-8">
     <title>WerkPay</title>
-    <!-- De officiële Supabase bibliotheek die alle CORS preflight problemen automatisch oplost -->
-    <script src="https://unpkg.com"></script>
+    <link rel="icon" href="data:,">
     <style>
         :root { --bg: #111827; --panel: #1f2937; --red: #ef4444; --green: #10b981; --blue: #3b82f6; --text: #f9fafb; --border: #374151; }
         body { font-family: sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 0; }
@@ -93,7 +91,12 @@
         </div>
     </div>
 </div>
-<!-- De ?v=2 dwingt de browser om de nieuwste app.js op te halen -->
-<script src="app.js?v=2"></script>
+
+<script>
+    // Dwingt de browser om ALTIJD de allernieuwste code te pakken (cache bypass)
+    const script = document.createElement('script');
+    script.src = "app.js?v=" + Date.now();
+    document.body.appendChild(script);
+</script>
 </body>
 </html>
