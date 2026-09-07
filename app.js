@@ -1,5 +1,5 @@
 // Directe cloud-database verbinding zonder proxy
-const supabaseUrl = "https://supabase.co";
+const supabaseUrl = "https://kpanjikwllhcyzqaxgqh.supabase.co";
 const key = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtwYW5qaWt3bGxoY3l6cWF4Z3FoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg2MTQ5OTAsImV4cCI6MjEwNDE5MDk5MH0.K3iatTgzsDREoGB2bBElCzDThhgaKC2z0H7ZxLwVJm8";
 
 // Centrale functie om de echte database in de cloud direct aan te roepen
