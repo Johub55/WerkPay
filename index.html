@@ -1,70 +1,83 @@
 <!DOCTYPE html>
-<html>
+<html lang="nl">
 <head>
     <meta charset="UTF-8">
-    <title>WerkPay</title>
+    <title>WerkPay Bank - Dashboard</title>
+    <!-- De officiële Supabase SDK die alle verbindingsproblemen voorkomt -->
+    <script src="https://unpkg.com"></script>
     <link rel="icon" href="data:,">
     <style>
         :root { --bg: #111827; --panel: #1f2937; --red: #ef4444; --green: #10b981; --blue: #3b82f6; --text: #f9fafb; --border: #374151; }
         body { font-family: sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 0; }
         .header { background: var(--panel); padding: 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--border); }
         .nav-tabs { display: flex; padding: 5px 20px 0; border-bottom: 1px solid var(--border); }
-        .tab { padding: 10px 20px; cursor: pointer; background: var(--panel); border: 1px solid var(--border); border-bottom: none; margin-right: 5px; font-weight: bold; }
+        .tab { padding: 10px 20px; cursor: pointer; background: var(--panel); border: 1px solid var(--border); border-bottom: none; margin-right: 5px; font-weight: bold; border-top-left-radius: 5px; border-top-right-radius: 5px; }
         .tab.active { background: var(--red); }
         .container { padding: 20px; max-width: 1100px; margin: 0 auto; }
         .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
         .card { background: var(--panel); border: 1px solid var(--border); padding: 20px; border-radius: 8px; margin-bottom: 20px; }
-        input, select { width: 100%; padding: 10px; background: var(--bg); border: 1px solid var(--border); color: white; border-radius: 5px; margin-bottom: 15px; box-sizing: border-box; }
-        button { width: 100%; padding: 12px; background: var(--red); color: white; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; margin-bottom: 5px; }
-        .atm-card { background: linear-gradient(135deg, #1e293b, #0f172a); padding: 20px; border-radius: 12px; border: 1px solid #475569; }
+        input, select { width: 100%; padding: 10px; background: var(--bg); border: 1px solid var(--border); color: white; border-radius: 5px; margin-bottom: 15px; box-sizing: border-box; font-size: 16px; }
+        button { width: 100%; padding: 12px; background: var(--red); color: white; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; margin-bottom: 5px; font-size: 16px; }
+        button:hover { filter: brightness(1.2); }
+        .atm-card { background: linear-gradient(135deg, #1e293b, #0f172a); padding: 25px; border-radius: 15px; border: 1px solid #475569; box-shadow: 0 10px 20px rgba(0,0,0,0.3); }
         .hidden { display: none !important; }
-        .btn-sm { width: auto; padding: 5px 10px; font-size: 12px; margin-right: 5px; }
+        .btn-sm { width: auto; padding: 6px 12px; font-size: 13px; margin-right: 5px; margin-top: 5px; }
     </style>
 </head>
 <body>
 
+<!-- 1. LOGIN SCHERM -->
 <div id="loginScreen" class="container card" style="max-width: 350px; margin: 100px auto; text-align: center;">
     <h1>Werk<span style="color:var(--red)">Pay</span> 🔒</h1>
+    <p style="color: #9ca3af; margin-bottom: 15px;">Inloggen bij de bank</p>
     <input type="text" id="loginUser" placeholder="Gebruikersnaam">
     <input type="password" id="loginPass" placeholder="Wachtwoord">
     <button onclick="handleLogin()">Inloggen</button>
 </div>
 
+<!-- 2. HOOFDMENU (Zichtbaar na inloggen) -->
 <div id="mainApp" class="hidden">
     <div class="header">
         <h2>Werk<span style="color:var(--red)">Pay Dashboard</span></h2>
-        <div><span id="welcomeText" style="margin-right:15px; font-weight:bold;"></span><button onclick="handleLogout()" style="width:auto; background:#4b5563;">Uitloggen</button></div>
+        <div>
+            <span id="welcomeText" style="margin-right:15px; font-weight:bold;"></span>
+            <button onclick="handleLogout()" style="width:auto; background:#4b5563;">Uitloggen</button>
+        </div>
     </div>
+    
     <div class="nav-tabs">
         <div id="tabWallet" class="tab active" onclick="switchTab('wallet')">💳 Portemonnee</div>
-        <div id="tabAdmin" class="tab hidden" onclick="switchTab('admin')">📊 Manager</div>
+        <div id="tabAdmin" class="tab hidden" onclick="switchTab('admin')">📊 Manager & Gebruikers</div>
     </div>
+    
     <div class="container">
+        <!-- TAB: PORTEMONNEE -->
         <div id="viewWallet" class="grid">
             <div class="card">
                 <h3>Jouw Digitale Bankpas</h3>
                 <div class="atm-card">
-                    <div style="color: var(--red); font-weight: bold;" id="lblCardType">WerkPay Premium</div>
-                    <h2 id="lblBalance" style="color: var(--green); margin: 10px 0; font-size: 40px;">€0,00</h2>
-                    <div id="lblHolder" style="text-transform: uppercase;"></div>
-                    <div id="lblUid" style="font-size: 12px; color: #9ca3af; margin-top: 10px;"></div>
+                    <div style="color: var(--red); font-weight: bold; font-size: 18px;" id="lblCardType">WerkPay Premium</div>
+                    <h2 id="lblBalance" style="color: var(--green); margin: 15px 0; font-size: 42px;">€0,00</h2>
+                    <div id="lblHolder" style="text-transform: uppercase; font-weight: bold; letter-spacing: 1px;"></div>
+                    <div id="lblUid" style="font-size: 13px; color: #9ca3af; margin-top: 15px;"></div>
                 </div>
             </div>
             <div>
                 <div class="card">
                     <h3>➕ Saldo Opwaarderen</h3>
-                    <input type="number" id="txtDeposit" placeholder="Bedrag in €">
+                    <input type="number" id="txtDeposit" placeholder="Bedrag in €" min="1">
                     <button style="background: var(--green)" onclick="handleDeposit()">Geld Storten</button>
                 </div>
                 <div class="card">
                     <h3>💸 Geld Overboeken</h3>
-                    <input type="text" id="txtTransferTarget" placeholder="Gebruikersnaam ontvanger">
-                    <input type="number" id="txtTransferAmount" placeholder="Bedrag in €">
-                    <button style="background: var(--blue)" onclick="handleTransfer()">Versturen</button>
+                    <input type="text" id="txtTransferTarget" placeholder="Gebruikersnaam van de ontvanger">
+                    <input type="number" id="txtTransferAmount" placeholder="Bedrag in €" min="1">
+                    <button style="background: var(--blue)" onclick="handleTransfer()">Versturen naar gebruiker</button>
                 </div>
             </div>
         </div>
         
+        <!-- TAB: MANAGER (Alleen voor Admins) -->
         <div id="viewAdmin" class="card hidden">
             <h3 id="adminFormTitle">👥 Gebruiker Toevoegen / Aanpassen</h3>
             <div class="grid">
@@ -72,20 +85,21 @@
                     <input type="hidden" id="editUserId">
                     <input type="text" id="regUser" placeholder="Gebruikersnaam">
                     <input type="text" id="regPass" placeholder="Wachtwoord">
-                    <input type="text" id="regHolder" placeholder="Volledige naam">
-                    <input type="text" id="regUid" placeholder="RFID UID (Optioneel)">
-                    <input type="text" id="regPin" placeholder="Pincode (4 cijfers)" maxlength="4">
-                    <input type="number" id="regBalance" placeholder="Startsaldo" value="0">
+                    <input type="text" id="regHolder" placeholder="Volledige naam rekeninghouder">
+                    <input type="text" id="regUid" placeholder="RFID Kaart UID (Optioneel)">
+                    <input type="text" id="regPin" placeholder="Pincode pinapparaat (4 cijfers)" maxlength="4">
+                    <input type="number" id="regBalance" placeholder="Startsaldo in €" value="0">
                     <select id="regIsAdmin" onchange="toggleAdminField()">
-                        <option value="false">Klant (Normaal)</option>
-                        <option value="true">Manager (Admin - Oneindig)</option>
+                        <option value="false">Klant / Werknemer (Normaal)</option>
+                        <option value="true">Manager / Admin (Oneindig geld)</option>
                     </select>
-                    <button style="background:var(--green)" onclick="handleCreateOrUpdateUser()">Gebruiker Opslaan</button>
+                    <button style="background:var(--green)" onclick="handleCreateOrUpdateUser()">Gebruiker Opslaan in Cloud</button>
                     <button style="background:#4b5563;" id="btnCancelEdit" class="hidden" onclick="cancelEdit()">Annuleren</button>
                 </div>
                 <div>
-                    <button style="background:#374151; margin-bottom:10px;" onclick="loadAllAccounts()">🔄 Verversen</button>
-                    <div id="accountsList" style="max-height: 450px; overflow-y: auto;"></div>
+                    <h3>Overzicht Geregistreerde Accounts</h3>
+                    <button style="background:#374151; margin-bottom:15px;" onclick="loadAllAccounts()">🔄 Lijst Verversen</button>
+                    <div id="accountsList" style="max-height: 480px; overflow-y: auto;"></div>
                 </div>
             </div>
         </div>
@@ -93,7 +107,7 @@
 </div>
 
 <script>
-    // Dwingt de browser om ALTIJD de allernieuwste code te pakken (cache bypass)
+    // Genereert telkens een uniek nummer om browser-caches 100% te omzeilen
     const script = document.createElement('script');
     script.src = "app.js?v=" + Date.now();
     document.body.appendChild(script);
