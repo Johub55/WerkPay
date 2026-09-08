@@ -1,1078 +1,614 @@
 <!DOCTYPE html>
-
-<html lang="nl">
+<html lang="nl" class="h-full bg-slate-950 text-slate-100">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
-  <meta http-equiv="Pragma" content="no-cache" />
-  <meta http-equiv="Expires" content="0" />
-  <title>WerkPay — WerkDonalds Bank</title>
-  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
-  <style>
-    :root {
-      --bg: #0b1220;
-      --bg-panel: #121c2e;
-      --bg-elevated: #1a2740;
-      --bg-input: #0a1424;
-      --accent: #3b82f6;
-      --accent-dark: #1d4ed8;
-      --accent-glow: rgba(59, 130, 246, 0.35);
-      --cyan: #67e8f9;
-      --green: #34d399;
-      --gold: #f4c430;
-      --text: #eef4ff;
-      --muted: #93a4c4;
-      --border: #2a3d63;
-      --danger: #fb7185;
-      --radius: 14px;
-      --shadow: 0 18px 40px rgba(3, 10, 28, 0.55);
-      --font: "Segoe UI", "Trebuchet MS", system-ui, sans-serif;
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WerkPay Bank - Digitale Portemonnee & Bankpas</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Supabase JS CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              primary: '#10b981',
+              dark: '#0f172a',
+              card1: '#064e3b',
+              card2: '#022c22'
+            }
+          }
+        }
+      }
     }
-
-* { box-sizing: border-box; margin: 0; padding: 0; }
-
-html, body {
-  min-height: 100%;
-  background: radial-gradient(1100px 560px at 8% -8%, #1e3a8a 0%, transparent 52%),
-              radial-gradient(900px 480px at 100% 0%, #0e7490 0%, transparent 46%),
-              var(--bg);
-  color: var(--text);
-  font-family: var(--font);
-}
-
-button, input, select { font-family: inherit; }
-.hidden { display: none !important; }
-
-#login-screen {
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 24px;
-}
-
-.login-card {
-  width: 100%;
-  max-width: 420px;
-  background: linear-gradient(180deg, #173056, var(--bg-panel));
-  border: 1px solid var(--border);
-  border-radius: 20px;
-  box-shadow: var(--shadow);
-  overflow: hidden;
-}
-
-.login-brand {
-  background: linear-gradient(90deg, var(--accent-dark), var(--accent));
-  padding: 22px 24px 18px;
-  display: flex;
-  align-items: center;
-  gap: 14px;
-}
-
-.logo-mark {
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  background: #07101e;
-  color: var(--cyan);
-  display: grid;
-  place-items: center;
-  font-weight: 800;
-  font-size: 18px;
-  border: 2px solid var(--cyan);
-}
-
-.login-brand h1 { font-size: 26px; letter-spacing: 0.08em; text-transform: uppercase; }
-.login-brand p { font-size: 12px; opacity: 0.92; letter-spacing: 0.12em; text-transform: uppercase; }
-.login-body { padding: 28px 24px 24px; }
-.login-body h2 {
-  font-size: 15px;
-  color: var(--muted);
-  text-transform: uppercase;
-  letter-spacing: 0.14em;
-  margin-bottom: 14px;
-}
-
-label {
-  display: block;
-  font-size: 12px;
-  color: var(--muted);
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  margin: 12px 0 6px;
-}
-
-input[type="text"],
-input[type="password"],
-input[type="number"] {
-  width: 100%;
-  background: var(--bg-input);
-  border: 1px solid var(--border);
-  color: var(--text);
-  border-radius: 10px;
-  padding: 12px 14px;
-  font-size: 16px;
-  outline: none;
-  transition: border-color 0.15s, box-shadow 0.15s;
-}
-
-input:focus {
-  border-color: var(--accent);
-  box-shadow: 0 0 0 3px var(--accent-glow);
-}
-
-.btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  border: none;
-  cursor: pointer;
-  border-radius: 10px;
-  padding: 12px 16px;
-  font-weight: 700;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  transition: transform 0.08s, filter 0.15s, background 0.15s;
-}
-.btn:active { transform: translateY(1px); }
-.btn:disabled { opacity: 0.55; cursor: not-allowed; }
-.btn-primary { background: var(--accent); color: #fff; width: 100%; margin-top: 18px; }
-.btn-primary:hover { filter: brightness(1.08); }
-.btn-green { background: var(--green); color: #062015; }
-.btn-blue { background: #2563eb; color: #fff; }
-.btn-ghost {
-  background: transparent;
-  color: var(--text);
-  border: 1px solid var(--border);
-}
-.btn-sm { padding: 7px 10px; font-size: 11px; border-radius: 8px; }
-.btn-danger { background: #3b1524; color: var(--danger); border: 1px solid #7f1d3a; }
-
-.pos-strip {
-  display: flex;
-  justify-content: space-between;
-  font-size: 11px;
-  color: #b8c7e6;
-  margin-top: 18px;
-  padding-top: 14px;
-  border-top: 1px dashed var(--border);
-  letter-spacing: 0.06em;
-}
-
-.auth-switch { display: flex; gap: 8px; margin-bottom: 8px; }
-.auth-switch .tab { flex: 1; text-align: center; }
-
-#app-screen { min-height: 100vh; display: flex; flex-direction: column; }
-
-header.appbar {
-  background: #07111f;
-  border-bottom: 3px solid var(--accent);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 12px 20px;
-  gap: 16px;
-}
-
-.brand-inline { display: flex; align-items: center; gap: 12px; }
-.brand-inline .logo-mark { width: 38px; height: 38px; font-size: 14px; }
-.brand-inline strong { letter-spacing: 0.12em; text-transform: uppercase; }
-.brand-inline span { display: block; font-size: 11px; color: var(--muted); }
-.tabs { display: flex; gap: 8px; flex-wrap: wrap; }
-
-.tab {
-  background: var(--bg-elevated);
-  color: var(--text);
-  border: 1px solid var(--border);
-  border-radius: 999px;
-  padding: 8px 16px;
-  cursor: pointer;
-  font-weight: 700;
-  font-size: 13px;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-}
-.tab.active { background: var(--accent); border-color: var(--accent); }
-
-.user-chip { display: flex; align-items: center; gap: 10px; color: var(--muted); font-size: 13px; }
-main { padding: 24px; max-width: 1280px; margin: 0 auto; width: 100%; }
-
-.grid-2 {
-  display: grid;
-  grid-template-columns: 1.15fr 0.85fr;
-  gap: 20px;
-}
-
-.panel {
-  background: var(--bg-panel);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 20px;
-  box-shadow: var(--shadow);
-}
-.panel h3 {
-  font-size: 13px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--cyan);
-  margin-bottom: 14px;
-}
-.panel-head {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 14px;
-}
-.panel-head h3 { margin-bottom: 0; }
-
-.bank-card {
-  position: relative;
-  border-radius: 20px;
-  padding: 24px;
-  min-height: 230px;
-  overflow: hidden;
-  background: linear-gradient(135deg, #1e3a5f 0%, #0f172a 42%, #1d4ed8 100%);
-  border: 1px solid #3b82f6;
-  box-shadow: 0 20px 50px rgba(0,0,0,0.45);
-  color: #fff;
-}
-.bank-card.god {
-  background: linear-gradient(135deg, #082f49 0%, #1e3a8a 40%, #67e8f9 100%);
-  border: 1px solid var(--gold);
-  box-shadow: 0 0 0 1px rgba(244,196,48,0.3), 0 24px 60px rgba(59,130,246,0.4);
-  animation: godPulse 3.2s ease-in-out infinite;
-}
-@keyframes godPulse {
-  0%, 100% { filter: saturate(1); }
-  50% { filter: saturate(1.2) brightness(1.08); }
-}
-
-.card-top { display: flex; justify-content: space-between; align-items: flex-start; }
-.card-brand { font-weight: 800; letter-spacing: 0.16em; text-transform: uppercase; }
-.card-tier { font-size: 12px; color: var(--cyan); letter-spacing: 0.18em; }
-.chip {
-  width: 46px; height: 34px; border-radius: 6px; margin: 28px 0 18px;
-  background: linear-gradient(135deg, #e2e8f0, #64748b); position: relative;
-}
-.chip::after {
-  content: ""; position: absolute; inset: 6px 8px;
-  border: 1px solid rgba(0,0,0,0.25); border-radius: 3px;
-}
-.card-uid {
-  font-family: ui-monospace, "Cascadia Mono", monospace;
-  letter-spacing: 0.18em; font-size: 18px; margin-bottom: 10px; cursor: pointer;
-}
-.card-bottom { display: flex; justify-content: space-between; align-items: flex-end; }
-.holder-label { font-size: 10px; color: #dbeafe; letter-spacing: 0.12em; }
-.holder-name { font-size: 16px; font-weight: 700; text-transform: uppercase; }
-.balance-box { text-align: right; }
-.balance-box small { display: block; font-size: 10px; letter-spacing: 0.14em; color: #dbeafe; }
-.balance-value { font-size: 32px; font-weight: 800; color: var(--green); line-height: 1.1; }
-.bank-card.god .balance-value {
-  color: var(--gold); font-size: 40px; text-shadow: 0 0 18px rgba(244,196,48,0.55);
-}
-.god-badge {
-  position: absolute; top: 18px; right: 18px; background: var(--gold); color: #1a1200;
-  font-size: 11px; font-weight: 800; letter-spacing: 0.16em; padding: 6px 10px; border-radius: 999px;
-}
-
-.row { display: flex; gap: 10px; }
-.row > * { flex: 1; }
-.hint { font-size: 12px; color: var(--muted); margin-top: 8px; }
-.chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 8px 0 4px; }
-.chip-btn {
-  background: var(--bg-elevated); color: var(--text); border: 1px solid var(--border);
-  border-radius: 999px; padding: 6px 12px; cursor: pointer; font-weight: 700; font-size: 12px;
-}
-.chip-btn:hover { border-color: var(--accent); color: var(--cyan); }
-
-.history { display: grid; gap: 8px; max-height: 220px; overflow: auto; }
-.history-item {
-  background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 10px;
-  padding: 10px 12px; font-size: 13px; display: flex; justify-content: space-between; gap: 10px;
-}
-.history-item .when { color: var(--muted); font-size: 11px; }
-.pos { color: var(--green); font-weight: 800; }
-.neg { color: var(--danger); font-weight: 800; }
-
-.manager-layout {
-  display: grid;
-  grid-template-columns: 380px 1fr;
-  gap: 20px;
-  align-items: start;
-}
-.stats { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 12px; }
-.stat {
-  background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 10px; padding: 10px;
-}
-.stat b { display: block; color: var(--cyan); font-size: 18px; }
-.stat span { font-size: 11px; color: var(--muted); letter-spacing: 0.06em; text-transform: uppercase; }
-
-.account-list { display: grid; gap: 10px; max-height: 64vh; overflow: auto; padding-right: 4px; }
-.account-item {
-  background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 12px; padding: 12px;
-}
-.account-item.admin-row { border-color: var(--gold); }
-.account-head { display: flex; justify-content: space-between; gap: 10px; align-items: flex-start; }
-.account-head strong { display: block; }
-.account-meta { font-size: 12px; color: var(--muted); margin-top: 4px; }
-.account-balance { color: var(--green); font-weight: 800; white-space: nowrap; }
-.quick-row { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
-.checkbox-row {
-  display: flex; align-items: center; gap: 8px; margin-top: 14px; color: var(--text); font-size: 14px;
-}
-.checkbox-row input { width: 18px; height: 18px; accent-color: var(--accent); }
-
-.modal-back {
-  position: fixed; inset: 0; background: rgba(4, 10, 24, 0.72);
-  display: grid; place-items: center; padding: 20px; z-index: 40;
-}
-.receipt {
-  width: 100%; max-width: 380px; background: #f8fafc; color: #0f172a;
-  border-radius: 12px; padding: 22px; font-family: ui-monospace, monospace;
-}
-.receipt h4 { text-align: center; letter-spacing: 0.12em; margin-bottom: 12px; }
-.receipt p { display: flex; justify-content: space-between; margin: 6px 0; font-size: 13px; }
-.receipt hr { border: none; border-top: 1px dashed #94a3b8; margin: 12px 0; }
-
-footer.pos-footer {
-  margin-top: auto; padding: 10px 20px; background: #050b16; color: #7f93b8;
-  font-size: 11px; letter-spacing: 0.08em; display: flex; justify-content: space-between;
-}
-
-@media (max-width: 960px) {
-  .grid-2, .manager-layout, .stats { grid-template-columns: 1fr; }
-  header.appbar { flex-wrap: wrap; }
-}
-
+  </script>
+  <style>
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #0f172a; }
+    ::-webkit-scrollbar-thumb { background: #334155; border-radius: 9999px; }
+    ::-webkit-scrollbar-thumb:hover { background: #475569; }
+    .card-gradient {
+      background: linear-gradient(135deg, #065f46 0%, #047857 40%, #0f172a 100%);
+    }
   </style>
-</head>
-<body>
-  <section id="login-screen">
-    <div class="login-card">
-      <div class="login-brand">
-        <div class="logo-mark">WD</div>
-        <div>
-          <h1>WerkPay</h1>
-          <p>Officiële bank van WerkDonalds</p>
-        </div>
-      </div>
-      <form class="login-body" onsubmit="handleLogin(event)">
-        <h2>Kassamedewerker / klant login</h2>
-        <div class="auth-switch">
-          <button class="tab active" id="auth-pass" type="button" onclick="setAuthMode('password')">Wachtwoord</button>
-          <button class="tab" id="auth-pin" type="button" onclick="setAuthMode('pin')">Pincode</button>
-        </div>
-        <label for="login-username">Gebruikersnaam</label>
-        <input id="login-username" type="text" autocomplete="username" required />
-        <label id="login-secret-label" for="login-secret">Wachtwoord</label>
-        <input id="login-secret" type="password" autocomplete="current-password" required />
-        <button class="btn btn-primary" type="submit">Inloggen</button>
-        <div class="pos-strip">
-          <span>POS-KANAAL · BANK</span>
-          <span>WERKDONALDS</span>
-        </div>
-      </form>
-    </div>
-  </section>
+<script src="/_aistudio-iframe.js?v=2f1c016a"></script></head>
+<body class="h-full flex flex-col font-sans selection:bg-emerald-500 selection:text-slate-950 overflow-hidden">
 
-  <section id="app-screen" class="hidden">
-    <header class="appbar">
-      <div class="brand-inline">
-        <div class="logo-mark">WD</div>
-        <div>
-          <strong>WerkPay</strong>
-          <span>WerkDonalds bankomgeving</span>
-        </div>
+  <!-- TOPBAR -->
+  <header class="bg-slate-900 border-b border-slate-800 px-4 py-3 flex items-center justify-between shrink-0 select-none">
+    <div class="flex items-center gap-3">
+      <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-emerald-500 to-teal-400 flex items-center justify-center font-black text-xl text-slate-950 shadow-lg">
+        💳
       </div>
-      <nav class="tabs">
-        <button class="tab active" id="tab-wallet" type="button" onclick="showView('wallet')">Mijn portemonnee</button>
-        <button class="tab hidden" id="tab-manager" type="button" onclick="showView('manager')">Manager &amp; gebruikers</button>
-      </nav>
-      <div class="user-chip">
-        <span id="session-label"></span>
-        <button class="btn btn-ghost btn-sm" type="button" onclick="refreshCurrentUser()">Ververs</button>
-        <button class="btn btn-ghost btn-sm" type="button" onclick="handleLogout()">Uitloggen</button>
-      </div>
-    </header>
-
-<main>
-  <section id="view-wallet">
-    <div class="grid-2">
       <div>
-        <div class="panel">
-          <div class="panel-head">
-            <h3>Digitale bankpas</h3>
-            <button class="btn btn-ghost btn-sm" type="button" onclick="copyCardUid()">UID kopiëren</button>
-          </div>
-          <article id="bank-card" class="bank-card" title="Klik om UID te kopiëren" onclick="copyCardUid()">
-            <div id="god-badge" class="god-badge hidden">GOD MODE</div>
-            <div class="card-top">
-              <div>
-                <div class="card-brand">WerkPay</div>
-                <div class="card-tier" id="card-tier">Premium</div>
-              </div>
-              <div class="chip" aria-hidden="true"></div>
-            </div>
-            <div class="card-uid" id="card-uid">•••• •••• •••• ••••</div>
-            <div class="card-bottom">
-              <div>
-                <div class="holder-label">Kaarthouder</div>
-                <div class="holder-name" id="card-holder">—</div>
-              </div>
-              <div class="balance-box">
-                <small>Saldo</small>
-                <div class="balance-value" id="card-balance">€ 0,00</div>
-              </div>
-            </div>
-          </article>
-          <p class="hint">Saldo wordt automatisch elke 20 seconden ververst.</p>
-        </div>
-
-        <div class="panel" style="margin-top:20px;">
-          <h3>Laatste transacties</h3>
-          <div id="history-list" class="history"></div>
-        </div>
-      </div>
-
-      <div>
-        <div class="panel" id="deposit-panel">
-          <h3>Saldo opwaarderen</h3>
-          <form onsubmit="handleDeposit(event)">
-            <label for="deposit-amount">Bedrag in euro</label>
-            <div class="chips">
-              <button class="chip-btn" type="button" onclick="setAmount('deposit-amount', 5)">€ 5</button>
-              <button class="chip-btn" type="button" onclick="setAmount('deposit-amount', 10)">€ 10</button>
-              <button class="chip-btn" type="button" onclick="setAmount('deposit-amount', 20)">€ 20</button>
-              <button class="chip-btn" type="button" onclick="setAmount('deposit-amount', 50)">€ 50</button>
-            </div>
-            <input id="deposit-amount" type="number" min="0.01" step="0.01" placeholder="10.00" required />
-            <button class="btn btn-green" type="submit" style="width:100%;margin-top:14px;">Opwaarderen</button>
-            <p class="hint">Het extra saldo wordt direct bijgeschreven op jouw WerkPay-rekening.</p>
-          </form>
-        </div>
-
-        <div class="panel" style="margin-top:20px;">
-          <h3>Geld overboeken</h3>
-          <form onsubmit="handleTransfer(event)">
-            <label for="transfer-username">Ontvanger (username of kaart-UID)</label>
-            <input id="transfer-username" type="text" required />
-            <label for="transfer-amount">Bedrag in euro</label>
-            <div class="chips">
-              <button class="chip-btn" type="button" onclick="setAmount('transfer-amount', 5)">€ 5</button>
-              <button class="chip-btn" type="button" onclick="setAmount('transfer-amount', 10)">€ 10</button>
-              <button class="chip-btn" type="button" onclick="setAmount('transfer-amount', 25)">€ 25</button>
-            </div>
-            <input id="transfer-amount" type="number" min="0.01" step="0.01" required />
-            <label for="transfer-note">Omschrijving (optioneel)</label>
-            <input id="transfer-note" type="text" maxlength="80" placeholder="Bijv. kassa 3 / fooien" />
-            <button class="btn btn-primary" type="submit">Overboeken</button>
-            <p class="hint" id="transfer-hint">Het bedrag wordt van jouw saldo afgeschreven en bij de ontvanger gestort.</p>
-          </form>
-        </div>
-
-        <div class="panel" style="margin-top:20px;" id="security-panel">
-          <h3>Beveiliging</h3>
-          <form onsubmit="handleChangePin(event)">
-            <label for="new-pin">Nieuwe pincode</label>
-            <input id="new-pin" type="text" minlength="4" required />
-            <button class="btn btn-blue" type="submit" style="width:100%;margin-top:12px;">Pincode wijzigen</button>
-          </form>
-        </div>
+        <h1 class="font-black text-lg tracking-tight leading-none text-white flex items-center gap-2">
+          WERKPAY BANK
+          <span class="text-[10px] uppercase font-bold tracking-widest px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">Online Wallet</span>
+        </h1>
+        <p class="text-xs text-slate-400">Digitale Betaalpas &amp; Saldo Beheer</p>
       </div>
     </div>
-  </section>
 
-  <section id="view-manager" class="hidden">
-    <div class="manager-layout">
-      <div class="panel">
-        <h3 id="user-form-title">Nieuwe gebruiker</h3>
-        <form onsubmit="handleCreateOrUpdateUser(event)">
-          <input type="hidden" id="user-id" />
-          <label for="user-username">Gebruikersnaam</label>
-          <input id="user-username" type="text" required />
-          <label for="user-password">Wachtwoord</label>
-          <input id="user-password" type="text" required />
-          <label for="user-holder">Rekeninghouder</label>
-          <input id="user-holder" type="text" required />
-          <label for="user-card">Kaart-UID</label>
-          <input id="user-card" type="text" required />
-          <label for="user-pin">Pincode</label>
-          <input id="user-pin" type="text" required />
-          <label for="user-balance">Saldo</label>
-          <input id="user-balance" type="number" step="0.01" required />
-          <label class="checkbox-row">
-            <input id="user-admin" type="checkbox" />
-            Beheerder (is_admin)
-          </label>
-          <div class="row" style="margin-top:16px;">
-            <button class="btn btn-primary" type="submit" id="user-save-btn" style="margin-top:0;">Opslaan</button>
-            <button class="btn btn-ghost" type="button" onclick="resetUserForm()">Leegmaken</button>
-          </div>
-        </form>
+    <!-- Active User & Cloud Status -->
+    <div class="flex items-center gap-3">
+      <div id="status-indicator" class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-800 border border-slate-700 text-xs">
+        <span id="status-dot" class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+        <span id="status-text" class="font-medium text-slate-300">Lokale Mode</span>
       </div>
 
-      <div class="panel">
-        <div class="panel-head">
-          <h3>Alle accounts</h3>
-          <button class="btn btn-ghost btn-sm" type="button" onclick="loadAllAccounts()">Vernieuwen</button>
-        </div>
-        <div class="stats">
-          <div class="stat"><b id="stat-count">0</b><span>Accounts</span></div>
-          <div class="stat"><b id="stat-admins">0</b><span>Beheerders</span></div>
-          <div class="stat"><b id="stat-total">€ 0,00</b><span>Totaal klantsaldo</span></div>
-        </div>
-        <label for="account-search">Zoeken</label>
-        <input id="account-search" type="text" placeholder="Naam, username of UID" oninput="renderAccountList()" />
-        <div id="account-list" class="account-list" style="margin-top:12px;"></div>
+      <!-- User Switcher Dropdown -->
+      <div class="flex items-center gap-2 bg-slate-950 border border-slate-800 rounded-xl px-2 py-1">
+        <span class="text-xs text-slate-400">Account:</span>
+        <select id="user-select" onchange="switchUser(this.value)" class="bg-transparent text-xs font-bold text-white outline-none cursor-pointer">
+          <option value="joas" class="bg-slate-900">Joas Thorig (Admin)</option>
+          <option value="klant01" class="bg-slate-900">Daan de Vries (€ 45.50)</option>
+          <option value="emma" class="bg-slate-900">Emma Bakker (€ 28.75)</option>
+        </select>
       </div>
+
+      <button onclick="openConfigModal()" title="Supabase Database Instellen" class="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition">
+        ⚙️
+      </button>
     </div>
-  </section>
-</main>
+  </header>
 
-<footer class="pos-footer">
-  <span>WERKDONALDS · WERKPAY POS BANK</span>
-  <span id="clock"></span>
-</footer>
+  <!-- MAIN DASHBOARD -->
+  <main class="flex-1 overflow-y-auto p-4 md:p-6 lg:p-8 bg-slate-950">
+    <div class="max-w-5xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6">
 
-  </section>
+      <!-- LEFT COLUMN: PAS & SALDO (5 COLS) -->
+      <div class="lg:col-span-5 space-y-6">
+        
+        <!-- DIGITAL BANKPAS CARD -->
+        <div class="card-gradient rounded-3xl p-6 border border-emerald-500/30 shadow-2xl relative overflow-hidden text-white flex flex-col justify-between h-56 group">
+          <!-- Background decoration -->
+          <div class="absolute -right-8 -bottom-8 w-40 h-40 bg-emerald-400/10 rounded-full blur-2xl pointer-events-none"></div>
 
-  <div id="receipt-modal" class="modal-back hidden" onclick="closeReceipt(event)">
-    <div class="receipt" role="dialog">
-      <h4>WERKPAY BON</h4>
-      <p><span>Tijd</span><span id="rcpt-time"></span></p>
-      <p><span>Type</span><span id="rcpt-type"></span></p>
-      <hr />
-      <p><span>Van</span><span id="rcpt-from"></span></p>
-      <p><span>Naar</span><span id="rcpt-to"></span></p>
-      <p><span>Omschrijving</span><span id="rcpt-note"></span></p>
-      <hr />
-      <p><span>Bedrag</span><strong id="rcpt-amount"></strong></p>
-      <button class="btn btn-primary" type="button" onclick="document.getElementById('receipt-modal').classList.add('hidden')">Sluiten</button>
+          <!-- Top of card -->
+          <div class="flex justify-between items-start">
+            <div class="flex items-center gap-2">
+              <span class="font-black text-base tracking-wider text-emerald-300">WERKPAY</span>
+              <span id="card-admin-badge" class="text-[9px] font-black uppercase px-2 py-0.5 rounded-full bg-amber-400 text-slate-950">GOD MODE</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="text-xs font-mono opacity-80">DEBIT</span>
+              <span class="text-2xl">📡</span>
+            </div>
+          </div>
+
+          <!-- EMV Chip -->
+          <div class="w-11 h-8 rounded-lg bg-gradient-to-tr from-amber-300 to-amber-100 border border-amber-400/60 shadow-inner flex items-center justify-center">
+            <div class="w-7 h-5 border border-amber-600/40 rounded"></div>
+          </div>
+
+          <!-- Card Number & Holder -->
+          <div>
+            <div id="card-uid-display" class="font-mono text-lg md:text-xl font-black tracking-widest text-slate-100 mb-2">
+              4129 8831 5504 9012
+            </div>
+            <div class="flex justify-between items-end text-xs font-mono">
+              <div>
+                <div class="text-[9px] uppercase tracking-wider text-emerald-200/70">Kaarthouder</div>
+                <div id="card-holder-display" class="font-bold text-white uppercase tracking-wider">JOAS THORIG</div>
+              </div>
+              <div>
+                <div class="text-[9px] uppercase tracking-wider text-emerald-200/70">Vervalt</div>
+                <div class="font-bold text-white">12/28</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- BALANCE CARD -->
+        <div class="bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-xl space-y-4">
+          <div class="flex justify-between items-center text-xs text-slate-400">
+            <span>Totaal Beschikbaar Saldo</span>
+            <button onclick="toggleHideBalance()" id="btn-toggle-eye" class="text-slate-400 hover:text-white transition">
+              👁️ Verberg
+            </button>
+          </div>
+
+          <div class="flex items-baseline gap-2">
+            <span id="balance-display" class="text-4xl md:text-5xl font-black text-emerald-400 font-mono tracking-tight">
+              € 999.999,00
+            </span>
+          </div>
+
+          <!-- Quick Top-up Buttons -->
+          <div class="pt-2">
+            <div class="text-xs font-bold text-slate-400 mb-2">Snel Opwaarderen</div>
+            <div class="grid grid-cols-4 gap-2">
+              <button onclick="quickTopUp(10)" class="py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-bold text-emerald-300 border border-slate-700 transition">
+                + € 10
+              </button>
+              <button onclick="quickTopUp(25)" class="py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-bold text-emerald-300 border border-slate-700 transition">
+                + € 25
+              </button>
+              <button onclick="quickTopUp(50)" class="py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-bold text-emerald-300 border border-slate-700 transition">
+                + € 50
+              </button>
+              <button onclick="quickTopUp(100)" class="py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-bold text-emerald-300 border border-slate-700 transition">
+                + € 100
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- SECURITY & PIN SETTINGS -->
+        <div class="bg-slate-900 border border-slate-800 rounded-3xl p-5 shadow-xl space-y-3">
+          <h3 class="font-bold text-xs text-slate-300 flex items-center gap-2">
+            <span>🔒</span> Pasveiligheid &amp; Pincode
+          </h3>
+          <div class="flex items-center justify-between text-xs bg-slate-950 p-3 rounded-2xl border border-slate-800">
+            <div>
+              <div class="font-bold text-white">4-Cijferige Pincode</div>
+              <div id="pin-display" class="font-mono text-emerald-400 text-xs">•••• (0000)</div>
+            </div>
+            <button onclick="changePinPrompt()" class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-bold text-slate-300 transition">
+              Wijzigen
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- RIGHT COLUMN: OVERBOEKEN & TRANSACTIES (7 COLS) -->
+      <div class="lg:col-span-7 space-y-6">
+
+        <!-- MONEY TRANSFER PANEL -->
+        <div class="bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-xl space-y-4">
+          <h3 class="font-black text-sm text-white flex items-center gap-2">
+            <span>💸</span> Geld Overboeken
+          </h3>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label class="block text-[11px] font-bold text-slate-400 mb-1">Naar Gebruiker of Winkel</label>
+              <input id="input-transfer-to" type="text" placeholder="bijv. klant01 of Werkdonalds Kassa" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white outline-none focus:border-emerald-500">
+            </div>
+            <div>
+              <label class="block text-[11px] font-bold text-slate-400 mb-1">Bedrag (€)</label>
+              <input id="input-transfer-amount" type="number" step="0.50" placeholder="0.00" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs font-mono text-white outline-none focus:border-emerald-500">
+            </div>
+          </div>
+          <div>
+            <label class="block text-[11px] font-bold text-slate-400 mb-1">Omschrijving</label>
+            <input id="input-transfer-note" type="text" placeholder="bijv. Lunch traktatie of verjaardag" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white outline-none focus:border-emerald-500">
+          </div>
+          <button onclick="executeTransfer()" class="w-full py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs transition flex items-center justify-center gap-2">
+            <span>🚀</span> Nu Veilig Overboeken
+          </button>
+        </div>
+
+        <!-- TRANSACTIONS HISTORY -->
+        <div class="bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-xl flex flex-col">
+          <div class="flex justify-between items-center pb-4 border-b border-slate-800 mb-4">
+            <h3 class="font-black text-sm text-white flex items-center gap-2">
+              <span>🧾</span> Transactiegeschiedenis
+            </h3>
+            <button onclick="refreshTransactions()" class="text-xs text-emerald-400 hover:text-emerald-300">
+              Verversen ↻
+            </button>
+          </div>
+
+          <div id="transactions-list" class="space-y-2 overflow-y-auto max-h-96 pr-1">
+            <!-- Populated by JS -->
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </main>
+
+  <!-- MODAL: SUPABASE CONFIG -->
+  <div id="modal-config" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-800 rounded-3xl w-full max-w-md p-6 shadow-2xl space-y-4">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <h3 class="font-black text-white text-base flex items-center gap-2">
+          <span>⚙️</span> Supabase Verbinding (WerkPay)
+        </h3>
+        <button onclick="closeConfigModal()" class="text-slate-400 hover:text-white">✕</button>
+      </div>
+
+      <p class="text-xs text-slate-400 leading-relaxed">
+        Voer hier dezelfde Supabase URL en Anon Key in als bij Werkdonalds om beide applicaties live via Supabase met elkaar te synchroniseren.
+      </p>
+
+      <div class="space-y-3 text-xs">
+        <div>
+          <label class="block text-slate-300 mb-1 font-bold">Supabase Project URL</label>
+          <input id="cfg-url" type="text" placeholder="https://xyzcompany.supabase.co" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-white outline-none focus:border-emerald-500">
+        </div>
+        <div>
+          <label class="block text-slate-300 mb-1 font-bold">Supabase Anon Key</label>
+          <input id="cfg-key" type="password" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-white outline-none focus:border-emerald-500">
+        </div>
+      </div>
+
+      <div class="pt-2 flex justify-between items-center">
+        <button onclick="clearConfig()" class="text-xs text-rose-400 hover:text-rose-300">
+          Wis &amp; Gebruik Lokaal
+        </button>
+        <div class="flex gap-2">
+          <button onclick="closeConfigModal()" class="px-4 py-2 rounded-xl bg-slate-800 text-xs font-bold text-slate-300">
+            Annuleren
+          </button>
+          <button onclick="saveConfig()" class="px-4 py-2 rounded-xl bg-emerald-500 text-slate-950 font-black text-xs hover:bg-emerald-400">
+            Opslaan &amp; Verbinden
+          </button>
+        </div>
+      </div>
     </div>
   </div>
 
+  <!-- APPLICATION LOGIC -->
   <script>
-    const SUPABASE_URL = 'https://kpanjikwllhcyzqaxgqh.supabase.co';
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtwYW5qaWt3bGxoY3l6cWF4Z3FoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg2MTQ5OTAsImV4cCI6MjEwNDE5MDk5MH0.K3iatTgzsDREoGB2bBElCzDThhgaKC2z0H7ZxLwVJm8';
-    const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    // --- 1. DEFAULT ACCOUNTS ---
+    const ACCOUNTS = {
+      joas: {
+        username: 'joas',
+        name: 'Joas Thorig',
+        cardUid: '4129 8831 5504 9012',
+        pin: '0000',
+        balance: 999999.00,
+        isAdmin: true
+      },
+      klant01: {
+        username: 'klant01',
+        name: 'Daan de Vries',
+        cardUid: '5542 1198 3320 4411',
+        pin: '1234',
+        balance: 45.50,
+        isAdmin: false
+      },
+      emma: {
+        username: 'emma',
+        name: 'Emma Bakker',
+        cardUid: '4890 2214 7731 9904',
+        pin: '4321',
+        balance: 28.75,
+        isAdmin: false
+      }
+    };
 
-    let currentUser = null;
-    let authMode = 'password';
-    let allAccounts = [];
-    let refreshTimer = null;
+    let currentUser = 'joas';
+    let hideBalance = false;
+    let supabaseClient = null;
+    let transactions = [
+      { id: 1, type: 'credit', amount: 50.00, label: 'Salaris Storting', note: 'Maandelijks tegoed', date: 'Vandaag 09:15' },
+      { id: 2, type: 'debit', amount: 8.95, label: 'Werkdonalds Bestelling #1001', note: 'WerkMac Menu Voordeel', date: 'Gisteren 18:30' },
+      { id: 3, type: 'debit', amount: 4.95, label: 'Werkdonalds Bestelling #998', note: 'Kip Nuggets 9 stuks', date: 'Eergisteren 13:10' }
+    ];
 
-    function euro(amount) {
-      const n = Number(amount);
-      if (!Number.isFinite(n)) return '€ 0,00';
-      return '€ ' + n.toFixed(2).replace('.', ',');
+    function init() {
+      // Load saved state
+      const savedAccs = localStorage.getItem('wp_local_accounts');
+      if (savedAccs) {
+        try { Object.assign(ACCOUNTS, JSON.parse(savedAccs)); } catch(e){}
+      }
+      const savedTx = localStorage.getItem('wp_local_tx');
+      if (savedTx) {
+        try { transactions = JSON.parse(savedTx); } catch(e){}
+      }
+
+      initSupabase();
+      renderDashboard();
     }
 
-    function toNumber(value) {
-      const n = Number(value);
-      return Number.isFinite(n) ? n : 0;
-    }
+    const DEFAULT_SB_URL = 'https://qbncbzchrmbqhfbxgvbr.supabase.co';
+    const DEFAULT_SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFibmNiemNocm1icWhmYnhndmJyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg4NjI4OTUsImV4cCI6MjEwNDQzODg5NX0.cBbcg-VQyZ8NoxkVlDWF2ddmyD8MAS2jtHjRvDtrlOo';
 
-    function formatCardUid(uid) {
-      const raw = String(uid || '').replace(/\s+/g, '');
-      if (!raw) return '•••• •••• •••• ••••';
-      return raw.replace(/(.{4})/g, '$1 ').trim();
-    }
+    function initSupabase() {
+      const url = localStorage.getItem('wd_sb_url') || DEFAULT_SB_URL;
+      const key = localStorage.getItem('wd_sb_key') || DEFAULT_SB_KEY;
 
-    function isAdmin(user) {
-      return user && (user.is_admin === true || user.is_admin === 'true' || user.is_admin === 1);
-    }
-
-    function setAuthMode(mode) {
-      authMode = mode;
-      document.getElementById('auth-pass').classList.toggle('active', mode === 'password');
-      document.getElementById('auth-pin').classList.toggle('active', mode === 'pin');
-      document.getElementById('login-secret-label').textContent = mode === 'pin' ? 'Pincode' : 'Wachtwoord';
-      document.getElementById('login-secret').value = '';
-      document.getElementById('login-secret').focus();
-    }
-
-    function setAmount(id, value) {
-      document.getElementById(id).value = value;
-    }
-
-    function historyKey() {
-      return 'werkpay-history-' + (currentUser && currentUser.username ? currentUser.username : 'guest');
-    }
-
-    function loadHistory() {
-      try {
-        return JSON.parse(localStorage.getItem(historyKey()) || '[]');
-      } catch (e) {
-        return [];
+      if (url && key && window.supabase) {
+        try {
+          supabaseClient = window.supabase.createClient(url, key);
+          document.getElementById('status-dot').className = 'w-2.5 h-2.5 rounded-full bg-emerald-400';
+          document.getElementById('status-text').innerText = 'Supabase Cloud';
+          subscribeToRealtime();
+          loadCloudData();
+        } catch (err) {
+          console.error(err);
+          useLocalMode();
+        }
+      } else {
+        useLocalMode();
       }
     }
 
-    function saveHistoryItem(item) {
-      const list = loadHistory();
-      list.unshift(item);
-      localStorage.setItem(historyKey(), JSON.stringify(list.slice(0, 25)));
-      renderHistory();
+    function useLocalMode() {
+      supabaseClient = null;
+      document.getElementById('status-dot').className = 'w-2.5 h-2.5 rounded-full bg-amber-400';
+      document.getElementById('status-text').innerText = 'Lokale Mode';
     }
 
-    function renderHistory() {
-      const box = document.getElementById('history-list');
-      const items = loadHistory();
-      if (!items.length) {
-        box.innerHTML = '<p class="hint">Nog geen lokale transacties op dit apparaat.</p>';
+    async function loadCloudData() {
+      if (!supabaseClient) return;
+      try {
+        const { data, error } = await supabaseClient.from('bank_accounts').select('*').eq('username', currentUser).single();
+        if (!error && data) {
+          ACCOUNTS[currentUser].balance = Number(data.balance);
+          ACCOUNTS[currentUser].cardUid = data.card_uid;
+          ACCOUNTS[currentUser].pin = data.pin_code;
+          renderDashboard();
+        }
+
+        const { data: txData } = await supabaseClient.from('bank_transactions')
+          .select('*')
+          .or(`from_account.eq.${currentUser},to_account.eq.${currentUser}`)
+          .order('created_at', { ascending: false })
+          .limit(25);
+
+        if (txData && txData.length > 0) {
+          transactions = txData.map(t => ({
+            id: t.id,
+            type: t.from_account === currentUser ? 'debit' : 'credit',
+            amount: Number(t.amount),
+            label: t.label,
+            note: t.note || (t.from_account === currentUser ? `Naar ${t.to_account}` : `Van ${t.from_account}`),
+            date: new Date(t.created_at).toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit' })
+          }));
+          renderTransactions();
+        }
+      } catch (err) {
+        console.error('Error loading cloud data:', err);
+      }
+    }
+
+    function subscribeToRealtime() {
+      if (!supabaseClient) return;
+      try {
+        supabaseClient.channel('werkpay-realtime')
+          .on('postgres_changes', { event: '*', schema: 'public', table: 'bank_transactions' }, () => {
+            loadCloudData();
+          })
+          .on('postgres_changes', { event: '*', schema: 'public', table: 'bank_accounts' }, () => {
+            loadCloudData();
+          })
+          .subscribe();
+      } catch(e){}
+    }
+
+    function switchUser(u) {
+      currentUser = u;
+      loadCloudData();
+      renderDashboard();
+    }
+
+    function toggleHideBalance() {
+      hideBalance = !hideBalance;
+      renderDashboard();
+    }
+
+    function renderDashboard() {
+      const user = ACCOUNTS[currentUser];
+      if (!user) return;
+
+      document.getElementById('card-uid-display').innerText = user.cardUid;
+      document.getElementById('card-holder-display').innerText = user.name.toUpperCase();
+      document.getElementById('pin-display').innerText = `•••• (${user.pin})`;
+
+      const adminBadge = document.getElementById('card-admin-badge');
+      if (user.isAdmin) {
+        adminBadge.classList.remove('hidden');
+      } else {
+        adminBadge.classList.add('hidden');
+      }
+
+      const balEl = document.getElementById('balance-display');
+      const btnEye = document.getElementById('btn-toggle-eye');
+      if (hideBalance) {
+        balEl.innerText = '€ ••••••';
+        btnEye.innerText = '👁️ Toon';
+      } else {
+        balEl.innerText = `€ ${user.balance.toLocaleString('nl-NL', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+        btnEye.innerText = '👁️ Verberg';
+      }
+
+      renderTransactions();
+    }
+
+    function renderTransactions() {
+      const list = document.getElementById('transactions-list');
+      if (transactions.length === 0) {
+        list.innerHTML = `
+          <div class="py-8 text-center text-slate-500 text-xs">
+            Nog geen transacties op dit account.
+          </div>
+        `;
         return;
       }
-      box.innerHTML = items.map(function (item) {
-        const cls = item.amount >= 0 ? 'pos' : 'neg';
-        return '<div class="history-item"><div>' + item.label +
-          '<div class="when">' + item.when + '</div></div><div class="' + cls + '">' +
-          (item.amount >= 0 ? '+' : '') + euro(item.amount) + '</div></div>';
+
+      list.innerHTML = transactions.map(t => {
+        const isCredit = t.type === 'credit';
+        return `
+          <div class="bg-slate-950 border border-slate-800 rounded-2xl p-3 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+              <div class="w-8 h-8 rounded-xl ${isCredit ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'bg-rose-500/20 text-rose-400 border border-rose-500/30'} flex items-center justify-center text-sm font-black">
+                ${isCredit ? '↓' : '↑'}
+              </div>
+              <div>
+                <div class="font-bold text-xs text-white">${t.label}</div>
+                <div class="text-[11px] text-slate-400">${t.note || ''} • ${t.date}</div>
+              </div>
+            </div>
+            <div class="font-mono font-black text-xs ${isCredit ? 'text-emerald-400' : 'text-slate-200'}">
+              ${isCredit ? '+' : '-'} € ${t.amount.toFixed(2)}
+            </div>
+          </div>
+        `;
       }).join('');
     }
 
-    function showReceipt(type, from, to, amount, note) {
-      document.getElementById('rcpt-time').textContent = new Date().toLocaleString('nl-NL');
-      document.getElementById('rcpt-type').textContent = type;
-      document.getElementById('rcpt-from').textContent = from;
-      document.getElementById('rcpt-to').textContent = to;
-      document.getElementById('rcpt-note').textContent = note || '—';
-      document.getElementById('rcpt-amount').textContent = euro(amount);
-      document.getElementById('receipt-modal').classList.remove('hidden');
-    }
+    async function quickTopUp(amount) {
+      const user = ACCOUNTS[currentUser];
+      user.balance += amount;
+      saveLocalAccounts();
 
-    function closeReceipt(event) {
-      if (event.target.id === 'receipt-modal') {
-        document.getElementById('receipt-modal').classList.add('hidden');
-      }
-    }
-
-    async function copyCardUid() {
-      if (!currentUser || !currentUser.card_uid) {
-        alert('Geen kaart-UID om te kopiëren.');
-        return;
-      }
-      try {
-        await navigator.clipboard.writeText(String(currentUser.card_uid));
-        alert('Kaart-UID gekopieerd.');
-      } catch (e) {
-        alert('Kopiëren niet mogelijk. UID: ' + currentUser.card_uid);
-      }
-    }
-
-    function startAutoRefresh() {
-      stopAutoRefresh();
-      refreshTimer = setInterval(function () {
-        if (currentUser) refreshCurrentUser(true);
-      }, 20000);
-    }
-
-    function stopAutoRefresh() {
-      if (refreshTimer) clearInterval(refreshTimer);
-      refreshTimer = null;
-    }
-
-    async function refreshCurrentUser(silent) {
-      if (!currentUser) return;
-      const { data, error } = await db
-        .from('bank_accounts')
-        .select('*')
-        .eq('id', currentUser.id)
-        .maybeSingle();
-      if (error) {
-        if (!silent) alert('Kon jouw account niet verversen: ' + error.message);
-        return;
-      }
-      if (data) {
-        currentUser = data;
-        renderWallet();
-      }
-    }
-
-    async function handleLogin(event) {
-      event.preventDefault();
-      const username = document.getElementById('login-username').value.trim();
-      const secret = document.getElementById('login-secret').value;
-      if (!username || !secret) {
-        alert('Vul gebruikersnaam en ' + (authMode === 'pin' ? 'pincode' : 'wachtwoord') + ' in.');
-        return;
-      }
-      let query = db.from('bank_accounts').select('*').eq('username', username);
-      if (authMode === 'pin') query = query.eq('pin_code', secret);
-      else query = query.eq('password', secret);
-      const { data, error } = await query.maybeSingle();
-      if (error) {
-        alert('Inloggen mislukt: ' + error.message);
-        return;
-      }
-      if (!data) {
-        alert('Ongeldige inloggegevens. Controleer gebruikersnaam en ' + (authMode === 'pin' ? 'pincode' : 'wachtwoord') + '.');
-        return;
-      }
-      currentUser = data;
-      document.getElementById('login-screen').classList.add('hidden');
-      document.getElementById('app-screen').classList.remove('hidden');
-      document.getElementById('session-label').textContent =
-        (data.account_holder || data.username) + ' · @' + data.username;
-      const managerTab = document.getElementById('tab-manager');
-      if (isAdmin(data)) managerTab.classList.remove('hidden');
-      else managerTab.classList.add('hidden');
-      renderWallet();
-      renderHistory();
-      showView('wallet');
-      startAutoRefresh();
-      if (isAdmin(data)) loadAllAccounts();
-    }
-
-    function handleLogout() {
-      if (!confirm('Wil je uitloggen?')) return;
-      currentUser = null;
-      stopAutoRefresh();
-      document.getElementById('app-screen').classList.add('hidden');
-      document.getElementById('login-screen').classList.remove('hidden');
-      document.getElementById('login-secret').value = '';
-      resetUserForm();
-      showView('wallet');
-    }
-
-    function showView(name) {
-      document.getElementById('view-wallet').classList.toggle('hidden', name !== 'wallet');
-      document.getElementById('view-manager').classList.toggle('hidden', name !== 'manager');
-      document.getElementById('tab-wallet').classList.toggle('active', name === 'wallet');
-      document.getElementById('tab-manager').classList.toggle('active', name === 'manager');
-      if (name === 'manager' && isAdmin(currentUser)) loadAllAccounts();
-    }
-
-    function renderWallet() {
-      if (!currentUser) return;
-      const card = document.getElementById('bank-card');
-      const god = isAdmin(currentUser);
-      card.classList.toggle('god', god);
-      document.getElementById('god-badge').classList.toggle('hidden', !god);
-      document.getElementById('card-tier').textContent = god ? 'GOD MODE · UNLIMITED' : 'Premium';
-      document.getElementById('card-uid').textContent = formatCardUid(currentUser.card_uid);
-      document.getElementById('card-holder').textContent = currentUser.account_holder || currentUser.username;
-      document.getElementById('card-balance').textContent = god ? '€ ∞' : euro(currentUser.balance);
-      document.getElementById('deposit-panel').classList.toggle('hidden', god);
-      document.getElementById('transfer-hint').textContent = god
-        ? 'GOD MODE: er gaat niets van jouw saldo af. De ontvanger krijgt het bedrag wel.'
-        : 'Het bedrag wordt van jouw saldo afgeschreven en bij de ontvanger gestort.';
-    }
-
-    async function handleDeposit(event) {
-      event.preventDefault();
-      if (!currentUser) return;
-      if (isAdmin(currentUser)) {
-        alert('Beheerders hebben oneindig saldo en kunnen niet opwaarderen.');
-        return;
-      }
-      const amount = toNumber(document.getElementById('deposit-amount').value);
-      if (amount <= 0) {
-        alert('Voer een geldig bedrag groter dan 0 in.');
-        return;
-      }
-      const newBalance = toNumber(currentUser.balance) + amount;
-      const { error } = await db
-        .from('bank_accounts')
-        .update({ balance: newBalance })
-        .eq('id', currentUser.id);
-      if (error) {
-        alert('Opwaarderen mislukt: ' + error.message);
-        return;
-      }
-      document.getElementById('deposit-amount').value = '';
-      await refreshCurrentUser();
-      saveHistoryItem({
-        label: 'Opwaardering',
+      const newTx = {
+        id: Date.now(),
+        type: 'credit',
         amount: amount,
-        when: new Date().toLocaleString('nl-NL')
-      });
-      showReceipt('Opwaardering', currentUser.username, currentUser.username, amount, 'Saldo bijgeboekt');
+        label: 'Directe Opwaardering',
+        note: 'iDEAL / WerkPay Instant',
+        date: new Date().toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit' })
+      };
+      transactions.unshift(newTx);
+      saveLocalTx();
+
+      if (supabaseClient) {
+        try {
+          await supabaseClient.from('bank_accounts').update({ balance: user.balance }).eq('username', currentUser);
+          await supabaseClient.from('bank_transactions').insert([{
+            from_account: 'iDEAL Opwaardering',
+            to_account: currentUser,
+            amount: amount,
+            label: 'Directe Opwaardering',
+            note: 'iDEAL Instant'
+          }]);
+        } catch(e){}
+      }
+
+      renderDashboard();
     }
 
-    async function findRecipient(query) {
-      const value = String(query || '').trim();
-      const uid = value.replace(/\s+/g, '');
-      const byName = await db.from('bank_accounts').select('*').eq('username', value).maybeSingle();
-      if (byName.error) return { error: byName.error };
-      if (byName.data) return { data: byName.data };
-      const byUid = await db.from('bank_accounts').select('*').eq('card_uid', uid).maybeSingle();
-      if (byUid.error) return { error: byUid.error };
-      return { data: byUid.data };
-    }
+    async function executeTransfer() {
+      const to = document.getElementById('input-transfer-to').value.trim();
+      const amount = parseFloat(document.getElementById('input-transfer-amount').value);
+      const note = document.getElementById('input-transfer-note').value.trim();
 
-    async function handleTransfer(event) {
-      event.preventDefault();
-      if (!currentUser) return;
-      const targetQuery = document.getElementById('transfer-username').value.trim();
-      const amount = toNumber(document.getElementById('transfer-amount').value);
-      const note = document.getElementById('transfer-note').value.trim();
-      if (!targetQuery) {
-        alert('Vul de gebruikersnaam of het kaart-UID van de ontvanger in.');
+      if (!to) {
+        alert('Vul een ontvanger in.');
         return;
       }
-      if (amount <= 0) {
-        alert('Voer een geldig bedrag groter dan 0 in.');
+      if (!amount || amount <= 0) {
+        alert('Vul een geldig bedrag in.');
         return;
       }
-      const found = await findRecipient(targetQuery);
-      if (found.error) {
-        alert('Ontvanger zoeken mislukt: ' + found.error.message);
-        return;
-      }
-      const recipient = found.data;
-      if (!recipient) {
-        alert('Geen account gevonden met username of kaart-UID "' + targetQuery + '".');
-        return;
-      }
-      if (String(recipient.id) === String(currentUser.id) ||
-          String(recipient.username).toLowerCase() === String(currentUser.username).toLowerCase()) {
-        alert('Je kunt geen geld naar jezelf overboeken.');
-        return;
-      }
-      const senderIsAdmin = isAdmin(currentUser);
-      if (!senderIsAdmin && toNumber(currentUser.balance) < amount) {
+
+      const user = ACCOUNTS[currentUser];
+      if (!user.isAdmin && user.balance < amount) {
         alert('Onvoldoende saldo voor deze overboeking.');
         return;
       }
-      const ok = confirm(
-        'Bevestig overboeking van ' + euro(amount) + ' naar ' +
-        (recipient.account_holder || recipient.username) + '?'
-      );
-      if (!ok) return;
 
-      if (!senderIsAdmin) {
-        const { error: debitError } = await db
-          .from('bank_accounts')
-          .update({ balance: toNumber(currentUser.balance) - amount })
-          .eq('id', currentUser.id);
-        if (debitError) {
-          alert('Afschrijven mislukt: ' + debitError.message);
-          return;
-        }
-      }
+      if (!user.isAdmin) user.balance -= amount;
+      saveLocalAccounts();
 
-      const { error: creditError } = await db
-        .from('bank_accounts')
-        .update({ balance: toNumber(recipient.balance) + amount })
-        .eq('id', recipient.id);
-      if (creditError) {
-        alert('Storten bij ontvanger mislukt: ' + creditError.message);
-        return;
-      }
-
-      document.getElementById('transfer-username').value = '';
-      document.getElementById('transfer-amount').value = '';
-      document.getElementById('transfer-note').value = '';
-      await refreshCurrentUser();
-      if (isAdmin(currentUser)) await loadAllAccounts();
-      saveHistoryItem({
-        label: 'Overboeking naar ' + recipient.username + (note ? ' · ' + note : ''),
-        amount: -amount,
-        when: new Date().toLocaleString('nl-NL')
-      });
-      showReceipt(
-        senderIsAdmin ? 'GOD MODE overboeking' : 'Overboeking',
-        currentUser.username,
-        recipient.username,
-        amount,
-        note
-      );
-    }
-
-    async function handleChangePin(event) {
-      event.preventDefault();
-      if (!currentUser) return;
-      const pin = document.getElementById('new-pin').value.trim();
-      if (pin.length < 4) {
-        alert('Pincode moet minstens 4 tekens zijn.');
-        return;
-      }
-      const { error } = await db.from('bank_accounts').update({ pin_code: pin }).eq('id', currentUser.id);
-      if (error) {
-        alert('Pincode wijzigen mislukt: ' + error.message);
-        return;
-      }
-      document.getElementById('new-pin').value = '';
-      await refreshCurrentUser();
-      alert('Pincode is bijgewerkt.');
-    }
-
-    async function loadAllAccounts() {
-      const { data, error } = await db
-        .from('bank_accounts')
-        .select('*')
-        .order('username');
-      if (error) {
-        alert('Accounts laden mislukt: ' + error.message);
-        return;
-      }
-      allAccounts = data || [];
-      const admins = allAccounts.filter(isAdmin);
-      const customers = allAccounts.filter(function (a) { return !isAdmin(a); });
-      const total = customers.reduce(function (sum, a) { return sum + toNumber(a.balance); }, 0);
-      document.getElementById('stat-count').textContent = String(allAccounts.length);
-      document.getElementById('stat-admins').textContent = String(admins.length);
-      document.getElementById('stat-total').textContent = euro(total);
-      renderAccountList();
-    }
-
-    function renderAccountList() {
-      const q = (document.getElementById('account-search').value || '').toLowerCase();
-      const list = document.getElementById('account-list');
-      list.innerHTML = '';
-      const filtered = allAccounts.filter(function (account) {
-        const blob = [
-          account.username, account.account_holder, account.card_uid
-        ].join(' ').toLowerCase();
-        return blob.indexOf(q) !== -1;
-      });
-      if (!filtered.length) {
-        list.innerHTML = '<p class="hint">Geen accounts gevonden.</p>';
-        return;
-      }
-      filtered.forEach(function (account) {
-        const admin = isAdmin(account);
-        const item = document.createElement('div');
-        item.className = 'account-item' + (admin ? ' admin-row' : '');
-        const safeUser = String(account.username || '').replace(/</g, '');
-        item.innerHTML =
-          '<div class="account-head">' +
-            '<div>' +
-              '<strong>' + safeUser + '</strong>' +
-              '<div class="account-meta">' +
-                (account.account_holder || '—') +
-                ' · UID ' + (account.card_uid || '—') +
-                (admin ? ' · BEHEERDER' : '') +
-              '</div>' +
-            '</div>' +
-            '<div class="account-balance">' + (admin ? '€ ∞' : euro(account.balance)) + '</div>' +
-          '</div>' +
-          '<div class="quick-row">' +
-            '<button class="btn btn-blue btn-sm" type="button">Aanpassen</button>' +
-            (admin ? '' :
-              '<button class="btn btn-green btn-sm" type="button">+ €10</button>' +
-              '<button class="btn btn-danger btn-sm" type="button">- €10</button>') +
-          '</div>';
-        const buttons = item.querySelectorAll('button');
-        buttons[0].addEventListener('click', function () { editUser(account); });
-        if (!admin) {
-          buttons[1].addEventListener('click', function () { quickMoney(account.id, 10); });
-          buttons[2].addEventListener('click', function () { quickMoney(account.id, -10); });
-        }
-        list.appendChild(item);
-      });
-    }
-
-    function editUser(account) {
-      document.getElementById('user-id').value = account.id;
-      document.getElementById('user-username').value = account.username || '';
-      document.getElementById('user-password').value = account.password || '';
-      document.getElementById('user-holder').value = account.account_holder || '';
-      document.getElementById('user-card').value = account.card_uid || '';
-      document.getElementById('user-pin').value = account.pin_code || '';
-      document.getElementById('user-balance').value = toNumber(account.balance);
-      document.getElementById('user-admin').checked = isAdmin(account);
-      document.getElementById('user-form-title').textContent = 'Gebruiker bewerken';
-      document.getElementById('user-save-btn').textContent = 'Wijzigingen opslaan';
-    }
-
-    function resetUserForm() {
-      document.getElementById('user-id').value = '';
-      document.getElementById('user-username').value = '';
-      document.getElementById('user-password').value = '';
-      document.getElementById('user-holder').value = '';
-      document.getElementById('user-card').value = '';
-      document.getElementById('user-pin').value = '';
-      document.getElementById('user-balance').value = '';
-      document.getElementById('user-admin').checked = false;
-      document.getElementById('user-form-title').textContent = 'Nieuwe gebruiker';
-      document.getElementById('user-save-btn').textContent = 'Opslaan';
-    }
-
-    async function handleCreateOrUpdateUser(event) {
-      event.preventDefault();
-      if (!isAdmin(currentUser)) {
-        alert('Alleen beheerders mogen accounts beheren.');
-        return;
-      }
-      const id = document.getElementById('user-id').value;
-      const payload = {
-        username: document.getElementById('user-username').value.trim(),
-        password: document.getElementById('user-password').value,
-        account_holder: document.getElementById('user-holder').value.trim(),
-        card_uid: document.getElementById('user-card').value.trim(),
-        pin_code: document.getElementById('user-pin').value.trim(),
-        balance: toNumber(document.getElementById('user-balance').value),
-        is_admin: document.getElementById('user-admin').checked
+      const newTx = {
+        id: Date.now(),
+        type: 'debit',
+        amount: amount,
+        label: `Overboeking naar ${to}`,
+        note: note || 'Geen omschrijving',
+        date: new Date().toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit' })
       };
-      if (!payload.username) {
-        alert('Username is verplicht.');
-        return;
+      transactions.unshift(newTx);
+      saveLocalTx();
+
+      if (supabaseClient) {
+        try {
+          await supabaseClient.from('bank_accounts').update({ balance: user.balance }).eq('username', currentUser);
+          await supabaseClient.from('bank_transactions').insert([{
+            from_account: currentUser,
+            to_account: to,
+            amount: amount,
+            label: `Overboeking naar ${to}`,
+            note: note
+          }]);
+        } catch(e){}
       }
-      let error;
-      if (id) {
-        const result = await db.from('bank_accounts').update(payload).eq('id', id);
-        error = result.error;
-      } else {
-        const result = await db.from('bank_accounts').insert(payload);
-        error = result.error;
-      }
-      if (error) {
-        alert((id ? 'Bijwerken' : 'Aanmaken') + ' mislukt: ' + error.message);
-        return;
-      }
-      alert(id ? 'Gebruiker bijgewerkt.' : 'Nieuwe gebruiker aangemaakt.');
-      resetUserForm();
-      await loadAllAccounts();
-      await refreshCurrentUser();
+
+      document.getElementById('input-transfer-to').value = '';
+      document.getElementById('input-transfer-amount').value = '';
+      document.getElementById('input-transfer-note').value = '';
+      alert(`✓ € ${amount.toFixed(2)} succesvol overgemaakt naar ${to}!`);
+      renderDashboard();
     }
 
-    async function quickMoney(id, delta) {
-      if (!isAdmin(currentUser)) {
-        alert('Alleen beheerders mogen dit doen.');
-        return;
+    function changePinPrompt() {
+      const user = ACCOUNTS[currentUser];
+      const newPin = prompt('Voer een nieuwe 4-cijferige pincode in:', user.pin);
+      if (newPin && newPin.length === 4 && /^\d+$/.test(newPin)) {
+        user.pin = newPin;
+        saveLocalAccounts();
+        if (supabaseClient) {
+          supabaseClient.from('bank_accounts').update({ pin_code: newPin }).eq('username', currentUser);
+        }
+        renderDashboard();
+        alert('✓ Pincode succesvol gewijzigd!');
+      } else if (newPin !== null) {
+        alert('Ongeldige pincode. Voer exact 4 cijfers in.');
       }
-      const { data, error } = await db
-        .from('bank_accounts')
-        .select('*')
-        .eq('id', id)
-        .maybeSingle();
-      if (error) {
-        alert('Account ophalen mislukt: ' + error.message);
-        return;
-      }
-      if (!data) {
-        alert('Account niet gevonden.');
-        return;
-      }
-      if (isAdmin(data)) {
-        alert('Beheerderssaldo kan niet met snelknoppen worden aangepast.');
-        return;
-      }
-      const newBalance = toNumber(data.balance) + delta;
-      const { error: updateError } = await db
-        .from('bank_accounts')
-        .update({ balance: newBalance })
-        .eq('id', id);
-      if (updateError) {
-        alert('Saldo aanpassen mislukt: ' + updateError.message);
-        return;
-      }
-      await loadAllAccounts();
-      if (currentUser && String(currentUser.id) === String(id)) await refreshCurrentUser();
     }
 
-    function tickClock() {
-      const el = document.getElementById('clock');
-      if (!el) return;
-      el.textContent = new Date().toLocaleString('nl-NL');
+    function saveLocalAccounts() {
+      localStorage.setItem('wp_local_accounts', JSON.stringify(ACCOUNTS));
     }
-    tickClock();
-    setInterval(tickClock, 1000);
+
+    function saveLocalTx() {
+      localStorage.setItem('wp_local_tx', JSON.stringify(transactions));
+    }
+
+    function refreshTransactions() {
+      if (supabaseClient) loadCloudData();
+      else renderTransactions();
+    }
+
+    // Config Modal
+    function openConfigModal() {
+      document.getElementById('cfg-url').value = localStorage.getItem('wd_sb_url') || DEFAULT_SB_URL;
+      document.getElementById('cfg-key').value = localStorage.getItem('wd_sb_key') || DEFAULT_SB_KEY;
+      document.getElementById('modal-config').classList.remove('hidden');
+    }
+
+    function closeConfigModal() {
+      document.getElementById('modal-config').classList.add('hidden');
+    }
+
+    function saveConfig() {
+      const url = document.getElementById('cfg-url').value.trim();
+      const key = document.getElementById('cfg-key').value.trim();
+      if (url && key) {
+        localStorage.setItem('wd_sb_url', url);
+        localStorage.setItem('wd_sb_key', key);
+      }
+      closeConfigModal();
+      initSupabase();
+    }
+
+    function clearConfig() {
+      localStorage.removeItem('wd_sb_url');
+      localStorage.removeItem('wd_sb_key');
+      closeConfigModal();
+      useLocalMode();
+    }
+
+    window.addEventListener('DOMContentLoaded', init);
   </script>
-
 </body>
 </html>
