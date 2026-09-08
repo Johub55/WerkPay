@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="nl">
 <head>
   <meta charset="UTF-8" />
@@ -29,323 +30,324 @@
       --font: "Segoe UI", "Trebuchet MS", system-ui, sans-serif;
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
 
-    html, body {
-      min-height: 100%;
-      background: radial-gradient(1100px 560px at 8% -8%, #1e3a8a 0%, transparent 52%),
-                  radial-gradient(900px 480px at 100% 0%, #0e7490 0%, transparent 46%),
-                  var(--bg);
-      color: var(--text);
-      font-family: var(--font);
-    }
+html, body {
+  min-height: 100%;
+  background: radial-gradient(1100px 560px at 8% -8%, #1e3a8a 0%, transparent 52%),
+              radial-gradient(900px 480px at 100% 0%, #0e7490 0%, transparent 46%),
+              var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+}
 
-    button, input, select { font-family: inherit; }
-    .hidden { display: none !important; }
+button, input, select { font-family: inherit; }
+.hidden { display: none !important; }
 
-    #login-screen {
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 24px;
-    }
+#login-screen {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
 
-    .login-card {
-      width: 100%;
-      max-width: 420px;
-      background: linear-gradient(180deg, #173056, var(--bg-panel));
-      border: 1px solid var(--border);
-      border-radius: 20px;
-      box-shadow: var(--shadow);
-      overflow: hidden;
-    }
+.login-card {
+  width: 100%;
+  max-width: 420px;
+  background: linear-gradient(180deg, #173056, var(--bg-panel));
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
 
-    .login-brand {
-      background: linear-gradient(90deg, var(--accent-dark), var(--accent));
-      padding: 22px 24px 18px;
-      display: flex;
-      align-items: center;
-      gap: 14px;
-    }
+.login-brand {
+  background: linear-gradient(90deg, var(--accent-dark), var(--accent));
+  padding: 22px 24px 18px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
 
-    .logo-mark {
-      width: 48px;
-      height: 48px;
-      border-radius: 50%;
-      background: #07101e;
-      color: var(--cyan);
-      display: grid;
-      place-items: center;
-      font-weight: 800;
-      font-size: 18px;
-      border: 2px solid var(--cyan);
-    }
+.logo-mark {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: #07101e;
+  color: var(--cyan);
+  display: grid;
+  place-items: center;
+  font-weight: 800;
+  font-size: 18px;
+  border: 2px solid var(--cyan);
+}
 
-    .login-brand h1 { font-size: 26px; letter-spacing: 0.08em; text-transform: uppercase; }
-    .login-brand p { font-size: 12px; opacity: 0.92; letter-spacing: 0.12em; text-transform: uppercase; }
-    .login-body { padding: 28px 24px 24px; }
-    .login-body h2 {
-      font-size: 15px;
-      color: var(--muted);
-      text-transform: uppercase;
-      letter-spacing: 0.14em;
-      margin-bottom: 14px;
-    }
+.login-brand h1 { font-size: 26px; letter-spacing: 0.08em; text-transform: uppercase; }
+.login-brand p { font-size: 12px; opacity: 0.92; letter-spacing: 0.12em; text-transform: uppercase; }
+.login-body { padding: 28px 24px 24px; }
+.login-body h2 {
+  font-size: 15px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  margin-bottom: 14px;
+}
 
-    label {
-      display: block;
-      font-size: 12px;
-      color: var(--muted);
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      margin: 12px 0 6px;
-    }
+label {
+  display: block;
+  font-size: 12px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin: 12px 0 6px;
+}
 
-    input[type="text"],
-    input[type="password"],
-    input[type="number"] {
-      width: 100%;
-      background: var(--bg-input);
-      border: 1px solid var(--border);
-      color: var(--text);
-      border-radius: 10px;
-      padding: 12px 14px;
-      font-size: 16px;
-      outline: none;
-      transition: border-color 0.15s, box-shadow 0.15s;
-    }
+input[type="text"],
+input[type="password"],
+input[type="number"] {
+  width: 100%;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  color: var(--text);
+  border-radius: 10px;
+  padding: 12px 14px;
+  font-size: 16px;
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
 
-    input:focus {
-      border-color: var(--accent);
-      box-shadow: 0 0 0 3px var(--accent-glow);
-    }
+input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-glow);
+}
 
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      border: none;
-      cursor: pointer;
-      border-radius: 10px;
-      padding: 12px 16px;
-      font-weight: 700;
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
-      transition: transform 0.08s, filter 0.15s, background 0.15s;
-    }
-    .btn:active { transform: translateY(1px); }
-    .btn:disabled { opacity: 0.55; cursor: not-allowed; }
-    .btn-primary { background: var(--accent); color: #fff; width: 100%; margin-top: 18px; }
-    .btn-primary:hover { filter: brightness(1.08); }
-    .btn-green { background: var(--green); color: #062015; }
-    .btn-blue { background: #2563eb; color: #fff; }
-    .btn-ghost {
-      background: transparent;
-      color: var(--text);
-      border: 1px solid var(--border);
-    }
-    .btn-sm { padding: 7px 10px; font-size: 11px; border-radius: 8px; }
-    .btn-danger { background: #3b1524; color: var(--danger); border: 1px solid #7f1d3a; }
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: none;
+  cursor: pointer;
+  border-radius: 10px;
+  padding: 12px 16px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  transition: transform 0.08s, filter 0.15s, background 0.15s;
+}
+.btn:active { transform: translateY(1px); }
+.btn:disabled { opacity: 0.55; cursor: not-allowed; }
+.btn-primary { background: var(--accent); color: #fff; width: 100%; margin-top: 18px; }
+.btn-primary:hover { filter: brightness(1.08); }
+.btn-green { background: var(--green); color: #062015; }
+.btn-blue { background: #2563eb; color: #fff; }
+.btn-ghost {
+  background: transparent;
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+.btn-sm { padding: 7px 10px; font-size: 11px; border-radius: 8px; }
+.btn-danger { background: #3b1524; color: var(--danger); border: 1px solid #7f1d3a; }
 
-    .pos-strip {
-      display: flex;
-      justify-content: space-between;
-      font-size: 11px;
-      color: #b8c7e6;
-      margin-top: 18px;
-      padding-top: 14px;
-      border-top: 1px dashed var(--border);
-      letter-spacing: 0.06em;
-    }
+.pos-strip {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  color: #b8c7e6;
+  margin-top: 18px;
+  padding-top: 14px;
+  border-top: 1px dashed var(--border);
+  letter-spacing: 0.06em;
+}
 
-    .auth-switch { display: flex; gap: 8px; margin-bottom: 8px; }
-    .auth-switch .tab { flex: 1; text-align: center; }
+.auth-switch { display: flex; gap: 8px; margin-bottom: 8px; }
+.auth-switch .tab { flex: 1; text-align: center; }
 
-    #app-screen { min-height: 100vh; display: flex; flex-direction: column; }
+#app-screen { min-height: 100vh; display: flex; flex-direction: column; }
 
-    header.appbar {
-      background: #07111f;
-      border-bottom: 3px solid var(--accent);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 12px 20px;
-      gap: 16px;
-    }
+header.appbar {
+  background: #07111f;
+  border-bottom: 3px solid var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 20px;
+  gap: 16px;
+}
 
-    .brand-inline { display: flex; align-items: center; gap: 12px; }
-    .brand-inline .logo-mark { width: 38px; height: 38px; font-size: 14px; }
-    .brand-inline strong { letter-spacing: 0.12em; text-transform: uppercase; }
-    .brand-inline span { display: block; font-size: 11px; color: var(--muted); }
-    .tabs { display: flex; gap: 8px; flex-wrap: wrap; }
+.brand-inline { display: flex; align-items: center; gap: 12px; }
+.brand-inline .logo-mark { width: 38px; height: 38px; font-size: 14px; }
+.brand-inline strong { letter-spacing: 0.12em; text-transform: uppercase; }
+.brand-inline span { display: block; font-size: 11px; color: var(--muted); }
+.tabs { display: flex; gap: 8px; flex-wrap: wrap; }
 
-    .tab {
-      background: var(--bg-elevated);
-      color: var(--text);
-      border: 1px solid var(--border);
-      border-radius: 999px;
-      padding: 8px 16px;
-      cursor: pointer;
-      font-weight: 700;
-      font-size: 13px;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-    }
-    .tab.active { background: var(--accent); border-color: var(--accent); }
+.tab {
+  background: var(--bg-elevated);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 8px 16px;
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.tab.active { background: var(--accent); border-color: var(--accent); }
 
-    .user-chip { display: flex; align-items: center; gap: 10px; color: var(--muted); font-size: 13px; }
-    main { padding: 24px; max-width: 1280px; margin: 0 auto; width: 100%; }
+.user-chip { display: flex; align-items: center; gap: 10px; color: var(--muted); font-size: 13px; }
+main { padding: 24px; max-width: 1280px; margin: 0 auto; width: 100%; }
 
-    .grid-2 {
-      display: grid;
-      grid-template-columns: 1.15fr 0.85fr;
-      gap: 20px;
-    }
+.grid-2 {
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  gap: 20px;
+}
 
-    .panel {
-      background: var(--bg-panel);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 20px;
-      box-shadow: var(--shadow);
-    }
-    .panel h3 {
-      font-size: 13px;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--cyan);
-      margin-bottom: 14px;
-    }
-    .panel-head {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 14px;
-    }
-    .panel-head h3 { margin-bottom: 0; }
+.panel {
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+  box-shadow: var(--shadow);
+}
+.panel h3 {
+  font-size: 13px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--cyan);
+  margin-bottom: 14px;
+}
+.panel-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+.panel-head h3 { margin-bottom: 0; }
 
-    .bank-card {
-      position: relative;
-      border-radius: 20px;
-      padding: 24px;
-      min-height: 230px;
-      overflow: hidden;
-      background: linear-gradient(135deg, #1e3a5f 0%, #0f172a 42%, #1d4ed8 100%);
-      border: 1px solid #3b82f6;
-      box-shadow: 0 20px 50px rgba(0,0,0,0.45);
-      color: #fff;
-    }
-    .bank-card.god {
-      background: linear-gradient(135deg, #082f49 0%, #1e3a8a 40%, #67e8f9 100%);
-      border: 1px solid var(--gold);
-      box-shadow: 0 0 0 1px rgba(244,196,48,0.3), 0 24px 60px rgba(59,130,246,0.4);
-      animation: godPulse 3.2s ease-in-out infinite;
-    }
-    @keyframes godPulse {
-      0%, 100% { filter: saturate(1); }
-      50% { filter: saturate(1.2) brightness(1.08); }
-    }
+.bank-card {
+  position: relative;
+  border-radius: 20px;
+  padding: 24px;
+  min-height: 230px;
+  overflow: hidden;
+  background: linear-gradient(135deg, #1e3a5f 0%, #0f172a 42%, #1d4ed8 100%);
+  border: 1px solid #3b82f6;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.45);
+  color: #fff;
+}
+.bank-card.god {
+  background: linear-gradient(135deg, #082f49 0%, #1e3a8a 40%, #67e8f9 100%);
+  border: 1px solid var(--gold);
+  box-shadow: 0 0 0 1px rgba(244,196,48,0.3), 0 24px 60px rgba(59,130,246,0.4);
+  animation: godPulse 3.2s ease-in-out infinite;
+}
+@keyframes godPulse {
+  0%, 100% { filter: saturate(1); }
+  50% { filter: saturate(1.2) brightness(1.08); }
+}
 
-    .card-top { display: flex; justify-content: space-between; align-items: flex-start; }
-    .card-brand { font-weight: 800; letter-spacing: 0.16em; text-transform: uppercase; }
-    .card-tier { font-size: 12px; color: var(--cyan); letter-spacing: 0.18em; }
-    .chip {
-      width: 46px; height: 34px; border-radius: 6px; margin: 28px 0 18px;
-      background: linear-gradient(135deg, #e2e8f0, #64748b); position: relative;
-    }
-    .chip::after {
-      content: ""; position: absolute; inset: 6px 8px;
-      border: 1px solid rgba(0,0,0,0.25); border-radius: 3px;
-    }
-    .card-uid {
-      font-family: ui-monospace, "Cascadia Mono", monospace;
-      letter-spacing: 0.18em; font-size: 18px; margin-bottom: 10px; cursor: pointer;
-    }
-    .card-bottom { display: flex; justify-content: space-between; align-items: flex-end; }
-    .holder-label { font-size: 10px; color: #dbeafe; letter-spacing: 0.12em; }
-    .holder-name { font-size: 16px; font-weight: 700; text-transform: uppercase; }
-    .balance-box { text-align: right; }
-    .balance-box small { display: block; font-size: 10px; letter-spacing: 0.14em; color: #dbeafe; }
-    .balance-value { font-size: 32px; font-weight: 800; color: var(--green); line-height: 1.1; }
-    .bank-card.god .balance-value {
-      color: var(--gold); font-size: 40px; text-shadow: 0 0 18px rgba(244,196,48,0.55);
-    }
-    .god-badge {
-      position: absolute; top: 18px; right: 18px; background: var(--gold); color: #1a1200;
-      font-size: 11px; font-weight: 800; letter-spacing: 0.16em; padding: 6px 10px; border-radius: 999px;
-    }
+.card-top { display: flex; justify-content: space-between; align-items: flex-start; }
+.card-brand { font-weight: 800; letter-spacing: 0.16em; text-transform: uppercase; }
+.card-tier { font-size: 12px; color: var(--cyan); letter-spacing: 0.18em; }
+.chip {
+  width: 46px; height: 34px; border-radius: 6px; margin: 28px 0 18px;
+  background: linear-gradient(135deg, #e2e8f0, #64748b); position: relative;
+}
+.chip::after {
+  content: ""; position: absolute; inset: 6px 8px;
+  border: 1px solid rgba(0,0,0,0.25); border-radius: 3px;
+}
+.card-uid {
+  font-family: ui-monospace, "Cascadia Mono", monospace;
+  letter-spacing: 0.18em; font-size: 18px; margin-bottom: 10px; cursor: pointer;
+}
+.card-bottom { display: flex; justify-content: space-between; align-items: flex-end; }
+.holder-label { font-size: 10px; color: #dbeafe; letter-spacing: 0.12em; }
+.holder-name { font-size: 16px; font-weight: 700; text-transform: uppercase; }
+.balance-box { text-align: right; }
+.balance-box small { display: block; font-size: 10px; letter-spacing: 0.14em; color: #dbeafe; }
+.balance-value { font-size: 32px; font-weight: 800; color: var(--green); line-height: 1.1; }
+.bank-card.god .balance-value {
+  color: var(--gold); font-size: 40px; text-shadow: 0 0 18px rgba(244,196,48,0.55);
+}
+.god-badge {
+  position: absolute; top: 18px; right: 18px; background: var(--gold); color: #1a1200;
+  font-size: 11px; font-weight: 800; letter-spacing: 0.16em; padding: 6px 10px; border-radius: 999px;
+}
 
-    .row { display: flex; gap: 10px; }
-    .row > * { flex: 1; }
-    .hint { font-size: 12px; color: var(--muted); margin-top: 8px; }
-    .chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 8px 0 4px; }
-    .chip-btn {
-      background: var(--bg-elevated); color: var(--text); border: 1px solid var(--border);
-      border-radius: 999px; padding: 6px 12px; cursor: pointer; font-weight: 700; font-size: 12px;
-    }
-    .chip-btn:hover { border-color: var(--accent); color: var(--cyan); }
+.row { display: flex; gap: 10px; }
+.row > * { flex: 1; }
+.hint { font-size: 12px; color: var(--muted); margin-top: 8px; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 8px 0 4px; }
+.chip-btn {
+  background: var(--bg-elevated); color: var(--text); border: 1px solid var(--border);
+  border-radius: 999px; padding: 6px 12px; cursor: pointer; font-weight: 700; font-size: 12px;
+}
+.chip-btn:hover { border-color: var(--accent); color: var(--cyan); }
 
-    .history { display: grid; gap: 8px; max-height: 220px; overflow: auto; }
-    .history-item {
-      background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 10px;
-      padding: 10px 12px; font-size: 13px; display: flex; justify-content: space-between; gap: 10px;
-    }
-    .history-item .when { color: var(--muted); font-size: 11px; }
-    .pos { color: var(--green); font-weight: 800; }
-    .neg { color: var(--danger); font-weight: 800; }
+.history { display: grid; gap: 8px; max-height: 220px; overflow: auto; }
+.history-item {
+  background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 10px;
+  padding: 10px 12px; font-size: 13px; display: flex; justify-content: space-between; gap: 10px;
+}
+.history-item .when { color: var(--muted); font-size: 11px; }
+.pos { color: var(--green); font-weight: 800; }
+.neg { color: var(--danger); font-weight: 800; }
 
-    .manager-layout {
-      display: grid;
-      grid-template-columns: 380px 1fr;
-      gap: 20px;
-      align-items: start;
-    }
-    .stats { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 12px; }
-    .stat {
-      background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 10px; padding: 10px;
-    }
-    .stat b { display: block; color: var(--cyan); font-size: 18px; }
-    .stat span { font-size: 11px; color: var(--muted); letter-spacing: 0.06em; text-transform: uppercase; }
+.manager-layout {
+  display: grid;
+  grid-template-columns: 380px 1fr;
+  gap: 20px;
+  align-items: start;
+}
+.stats { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 12px; }
+.stat {
+  background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 10px; padding: 10px;
+}
+.stat b { display: block; color: var(--cyan); font-size: 18px; }
+.stat span { font-size: 11px; color: var(--muted); letter-spacing: 0.06em; text-transform: uppercase; }
 
-    .account-list { display: grid; gap: 10px; max-height: 64vh; overflow: auto; padding-right: 4px; }
-    .account-item {
-      background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 12px; padding: 12px;
-    }
-    .account-item.admin-row { border-color: var(--gold); }
-    .account-head { display: flex; justify-content: space-between; gap: 10px; align-items: flex-start; }
-    .account-head strong { display: block; }
-    .account-meta { font-size: 12px; color: var(--muted); margin-top: 4px; }
-    .account-balance { color: var(--green); font-weight: 800; white-space: nowrap; }
-    .quick-row { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
-    .checkbox-row {
-      display: flex; align-items: center; gap: 8px; margin-top: 14px; color: var(--text); font-size: 14px;
-    }
-    .checkbox-row input { width: 18px; height: 18px; accent-color: var(--accent); }
+.account-list { display: grid; gap: 10px; max-height: 64vh; overflow: auto; padding-right: 4px; }
+.account-item {
+  background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 12px; padding: 12px;
+}
+.account-item.admin-row { border-color: var(--gold); }
+.account-head { display: flex; justify-content: space-between; gap: 10px; align-items: flex-start; }
+.account-head strong { display: block; }
+.account-meta { font-size: 12px; color: var(--muted); margin-top: 4px; }
+.account-balance { color: var(--green); font-weight: 800; white-space: nowrap; }
+.quick-row { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+.checkbox-row {
+  display: flex; align-items: center; gap: 8px; margin-top: 14px; color: var(--text); font-size: 14px;
+}
+.checkbox-row input { width: 18px; height: 18px; accent-color: var(--accent); }
 
-    .modal-back {
-      position: fixed; inset: 0; background: rgba(4, 10, 24, 0.72);
-      display: grid; place-items: center; padding: 20px; z-index: 40;
-    }
-    .receipt {
-      width: 100%; max-width: 380px; background: #f8fafc; color: #0f172a;
-      border-radius: 12px; padding: 22px; font-family: ui-monospace, monospace;
-    }
-    .receipt h4 { text-align: center; letter-spacing: 0.12em; margin-bottom: 12px; }
-    .receipt p { display: flex; justify-content: space-between; margin: 6px 0; font-size: 13px; }
-    .receipt hr { border: none; border-top: 1px dashed #94a3b8; margin: 12px 0; }
+.modal-back {
+  position: fixed; inset: 0; background: rgba(4, 10, 24, 0.72);
+  display: grid; place-items: center; padding: 20px; z-index: 40;
+}
+.receipt {
+  width: 100%; max-width: 380px; background: #f8fafc; color: #0f172a;
+  border-radius: 12px; padding: 22px; font-family: ui-monospace, monospace;
+}
+.receipt h4 { text-align: center; letter-spacing: 0.12em; margin-bottom: 12px; }
+.receipt p { display: flex; justify-content: space-between; margin: 6px 0; font-size: 13px; }
+.receipt hr { border: none; border-top: 1px dashed #94a3b8; margin: 12px 0; }
 
-    footer.pos-footer {
-      margin-top: auto; padding: 10px 20px; background: #050b16; color: #7f93b8;
-      font-size: 11px; letter-spacing: 0.08em; display: flex; justify-content: space-between;
-    }
+footer.pos-footer {
+  margin-top: auto; padding: 10px 20px; background: #050b16; color: #7f93b8;
+  font-size: 11px; letter-spacing: 0.08em; display: flex; justify-content: space-between;
+}
 
-    @media (max-width: 960px) {
-      .grid-2, .manager-layout, .stats { grid-template-columns: 1fr; }
-      header.appbar { flex-wrap: wrap; }
-    }
+@media (max-width: 960px) {
+  .grid-2, .manager-layout, .stats { grid-template-columns: 1fr; }
+  header.appbar { flex-wrap: wrap; }
+}
+
   </style>
 </head>
 <body>
@@ -361,7 +363,8 @@
       <form class="login-body" onsubmit="handleLogin(event)">
         <h2>Kassamedewerker / klant login</h2>
         <div class="auth-switch">
-          <button class="tab active" id="auth-pass" type="button">Gebruikersnaam + wachtwoord</button>
+          <button class="tab active" id="auth-pass" type="button" onclick="setAuthMode('password')">Wachtwoord</button>
+          <button class="tab" id="auth-pin" type="button" onclick="setAuthMode('pin')">Pincode</button>
         </div>
         <label for="login-username">Gebruikersnaam</label>
         <input id="login-username" type="text" autocomplete="username" required />
@@ -396,140 +399,145 @@
       </div>
     </header>
 
-    <main>
-      <section id="view-wallet">
-        <div class="grid-2">
-          <div>
-            <div class="panel">
-              <div class="panel-head">
-                <h3>Digitale bankpas</h3>
-                <button class="btn btn-ghost btn-sm" type="button" onclick="copyCardUid()">UID kopiëren</button>
+<main>
+  <section id="view-wallet">
+    <div class="grid-2">
+      <div>
+        <div class="panel">
+          <div class="panel-head">
+            <h3>Digitale bankpas</h3>
+            <button class="btn btn-ghost btn-sm" type="button" onclick="copyCardUid()">UID kopiëren</button>
+          </div>
+          <article id="bank-card" class="bank-card" title="Klik om UID te kopiëren" onclick="copyCardUid()">
+            <div id="god-badge" class="god-badge hidden">GOD MODE</div>
+            <div class="card-top">
+              <div>
+                <div class="card-brand">WerkPay</div>
+                <div class="card-tier" id="card-tier">Premium</div>
               </div>
-              <article id="bank-card" class="bank-card" title="Klik om UID te kopiëren" onclick="copyCardUid()">
-                <div id="god-badge" class="god-badge hidden">GOD MODE</div>
-                <div class="card-top">
-                  <div>
-                    <div class="card-brand">WerkPay</div>
-                    <div class="card-tier" id="card-tier">Premium</div>
-                  </div>
-                  <div class="chip" aria-hidden="true"></div>
-                </div>
-                <div class="card-uid" id="card-uid">•••• •••• •••• ••••</div>
-                <div class="card-bottom">
-                  <div>
-                    <div class="holder-label">Kaarthouder</div>
-                    <div class="holder-name" id="card-holder">—</div>
-                  </div>
-                  <div class="balance-box">
-                    <small>Saldo</small>
-                    <div class="balance-value" id="card-balance">€ 0,00</div>
-                  </div>
-                </div>
-              </article>
-              <p class="hint">Saldo wordt automatisch elke 20 seconden ververst.</p>
+              <div class="chip" aria-hidden="true"></div>
             </div>
-
-            <div class="panel" style="margin-top:20px;">
-              <h3>Laatste transacties</h3>
-              <div id="history-list" class="history"></div>
-            </div>
-          </div>
-
-          <div>
-            <div class="panel" id="deposit-panel">
-              <h3>🔐 Admin · saldo beheren</h3>
-              <form onsubmit="handleAdminBalanceAdjust(event)">
-                <label for="deposit-target">Doelaccount (username of kaart-UID)</label>
-                <input id="deposit-target" type="text" required />
-                <label for="deposit-amount">Bedrag in euro (+ om te geven, - om af te trekken)</label>
-                <input id="deposit-amount" type="number" step="0.01" placeholder="10.00" required />
-                <button class="btn btn-green" type="submit" style="width:100%;margin-top:14px;">Saldo aanpassen</button>
-                <p class="hint">Alleen beheerders kunnen saldo aanpassen. Gewone gebruikers kunnen zichzelf geen geld meer geven.</p>
-              </form>
-            </div>
-
-            <div class="panel" style="margin-top:20px;">
-              <h3>Geld overboeken</h3>
-              <form onsubmit="handleTransfer(event)">
-                <label for="transfer-username">Ontvanger (username of kaart-UID)</label>
-                <input id="transfer-username" type="text" required />
-                <label for="transfer-amount">Bedrag in euro</label>
-                <div class="chips">
-                  <button class="chip-btn" type="button" onclick="setAmount('transfer-amount', 5)">€ 5</button>
-                  <button class="chip-btn" type="button" onclick="setAmount('transfer-amount', 10)">€ 10</button>
-                  <button class="chip-btn" type="button" onclick="setAmount('transfer-amount', 25)">€ 25</button>
-                </div>
-                <input id="transfer-amount" type="number" min="0.01" step="0.01" required />
-                <label for="transfer-note">Omschrijving (optioneel)</label>
-                <input id="transfer-note" type="text" maxlength="80" placeholder="Bijv. kassa 3 / fooien" />
-                <button class="btn btn-primary" type="submit">Overboeken</button>
-                <p class="hint" id="transfer-hint">Het bedrag wordt van jouw saldo afgeschreven en bij de ontvanger gestort.</p>
-              </form>
-            </div>
-
-            <div class="panel" style="margin-top:20px;" id="security-panel">
-              <h3>Beveiliging</h3>
-              <form onsubmit="handleChangePin(event)">
-                <label for="new-pin">Nieuwe pincode</label>
-                <input id="new-pin" type="text" minlength="4" required />
-                <button class="btn btn-blue" type="submit" style="width:100%;margin-top:12px;">Pincode wijzigen</button>
-              </form>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section id="view-manager" class="hidden">
-        <div class="manager-layout">
-          <div class="panel">
-            <h3 id="user-form-title">Nieuwe gebruiker</h3>
-            <form onsubmit="handleCreateOrUpdateUser(event)">
-              <input type="hidden" id="user-id" />
-              <label for="user-username">Gebruikersnaam</label>
-              <input id="user-username" type="text" required />
-              <label for="user-password">Wachtwoord (leeg = ongewijzigd)</label>
-              <input id="user-password" type="text" required />
-              <label for="user-holder">Rekeninghouder</label>
-              <input id="user-holder" type="text" required />
-              <label for="user-card">Kaart-UID</label>
-              <input id="user-card" type="text" required />
-              <label for="user-pin">Pincode (leeg = ongewijzigd)</label>
-              <input id="user-pin" type="text" required />
-              <label for="user-balance">Saldo</label>
-              <input id="user-balance" type="number" step="0.01" required />
-              <label class="checkbox-row">
-                <input id="user-admin" type="checkbox" />
-                Beheerder (is_admin)
-              </label>
-              <div class="row" style="margin-top:16px;">
-                <button class="btn btn-primary" type="submit" id="user-save-btn" style="margin-top:0;">Opslaan</button>
-                <button class="btn btn-ghost" type="button" onclick="resetUserForm()">Leegmaken</button>
+            <div class="card-uid" id="card-uid">•••• •••• •••• ••••</div>
+            <div class="card-bottom">
+              <div>
+                <div class="holder-label">Kaarthouder</div>
+                <div class="holder-name" id="card-holder">—</div>
               </div>
-            </form>
-          </div>
-
-          <div class="panel">
-            <div class="panel-head">
-              <h3>Alle accounts</h3>
-              <button class="btn btn-ghost btn-sm" type="button" onclick="loadAllAccounts()">Vernieuwen</button>
+              <div class="balance-box">
+                <small>Saldo</small>
+                <div class="balance-value" id="card-balance">€ 0,00</div>
+              </div>
             </div>
-            <div class="stats">
-              <div class="stat"><b id="stat-count">0</b><span>Accounts</span></div>
-              <div class="stat"><b id="stat-admins">0</b><span>Beheerders</span></div>
-              <div class="stat"><b id="stat-total">€ 0,00</b><span>Totaal klantsaldo</span></div>
-            </div>
-            <label for="account-search">Zoeken</label>
-            <input id="account-search" type="text" placeholder="Naam, username of UID" oninput="renderAccountList()" />
-            <div id="account-list" class="account-list" style="margin-top:12px;"></div>
-          </div>
+          </article>
+          <p class="hint">Saldo wordt automatisch elke 20 seconden ververst.</p>
         </div>
-      </section>
-    </main>
 
-    <footer class="pos-footer">
-      <span>WERKDONALDS · WERKPAY POS BANK</span>
-      <span id="clock"></span>
-    </footer>
+        <div class="panel" style="margin-top:20px;">
+          <h3>Laatste transacties</h3>
+          <div id="history-list" class="history"></div>
+        </div>
+      </div>
+
+      <div>
+        <div class="panel" id="deposit-panel">
+          <h3>Saldo opwaarderen</h3>
+          <form onsubmit="handleDeposit(event)">
+            <label for="deposit-amount">Bedrag in euro</label>
+            <div class="chips">
+              <button class="chip-btn" type="button" onclick="setAmount('deposit-amount', 5)">€ 5</button>
+              <button class="chip-btn" type="button" onclick="setAmount('deposit-amount', 10)">€ 10</button>
+              <button class="chip-btn" type="button" onclick="setAmount('deposit-amount', 20)">€ 20</button>
+              <button class="chip-btn" type="button" onclick="setAmount('deposit-amount', 50)">€ 50</button>
+            </div>
+            <input id="deposit-amount" type="number" min="0.01" step="0.01" placeholder="10.00" required />
+            <button class="btn btn-green" type="submit" style="width:100%;margin-top:14px;">Opwaarderen</button>
+            <p class="hint">Het extra saldo wordt direct bijgeschreven op jouw WerkPay-rekening.</p>
+          </form>
+        </div>
+
+        <div class="panel" style="margin-top:20px;">
+          <h3>Geld overboeken</h3>
+          <form onsubmit="handleTransfer(event)">
+            <label for="transfer-username">Ontvanger (username of kaart-UID)</label>
+            <input id="transfer-username" type="text" required />
+            <label for="transfer-amount">Bedrag in euro</label>
+            <div class="chips">
+              <button class="chip-btn" type="button" onclick="setAmount('transfer-amount', 5)">€ 5</button>
+              <button class="chip-btn" type="button" onclick="setAmount('transfer-amount', 10)">€ 10</button>
+              <button class="chip-btn" type="button" onclick="setAmount('transfer-amount', 25)">€ 25</button>
+            </div>
+            <input id="transfer-amount" type="number" min="0.01" step="0.01" required />
+            <label for="transfer-note">Omschrijving (optioneel)</label>
+            <input id="transfer-note" type="text" maxlength="80" placeholder="Bijv. kassa 3 / fooien" />
+            <button class="btn btn-primary" type="submit">Overboeken</button>
+            <p class="hint" id="transfer-hint">Het bedrag wordt van jouw saldo afgeschreven en bij de ontvanger gestort.</p>
+          </form>
+        </div>
+
+        <div class="panel" style="margin-top:20px;" id="security-panel">
+          <h3>Beveiliging</h3>
+          <form onsubmit="handleChangePin(event)">
+            <label for="new-pin">Nieuwe pincode</label>
+            <input id="new-pin" type="text" minlength="4" required />
+            <button class="btn btn-blue" type="submit" style="width:100%;margin-top:12px;">Pincode wijzigen</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="view-manager" class="hidden">
+    <div class="manager-layout">
+      <div class="panel">
+        <h3 id="user-form-title">Nieuwe gebruiker</h3>
+        <form onsubmit="handleCreateOrUpdateUser(event)">
+          <input type="hidden" id="user-id" />
+          <label for="user-username">Gebruikersnaam</label>
+          <input id="user-username" type="text" required />
+          <label for="user-password">Wachtwoord</label>
+          <input id="user-password" type="text" required />
+          <label for="user-holder">Rekeninghouder</label>
+          <input id="user-holder" type="text" required />
+          <label for="user-card">Kaart-UID</label>
+          <input id="user-card" type="text" required />
+          <label for="user-pin">Pincode</label>
+          <input id="user-pin" type="text" required />
+          <label for="user-balance">Saldo</label>
+          <input id="user-balance" type="number" step="0.01" required />
+          <label class="checkbox-row">
+            <input id="user-admin" type="checkbox" />
+            Beheerder (is_admin)
+          </label>
+          <div class="row" style="margin-top:16px;">
+            <button class="btn btn-primary" type="submit" id="user-save-btn" style="margin-top:0;">Opslaan</button>
+            <button class="btn btn-ghost" type="button" onclick="resetUserForm()">Leegmaken</button>
+          </div>
+        </form>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head">
+          <h3>Alle accounts</h3>
+          <button class="btn btn-ghost btn-sm" type="button" onclick="loadAllAccounts()">Vernieuwen</button>
+        </div>
+        <div class="stats">
+          <div class="stat"><b id="stat-count">0</b><span>Accounts</span></div>
+          <div class="stat"><b id="stat-admins">0</b><span>Beheerders</span></div>
+          <div class="stat"><b id="stat-total">€ 0,00</b><span>Totaal klantsaldo</span></div>
+        </div>
+        <label for="account-search">Zoeken</label>
+        <input id="account-search" type="text" placeholder="Naam, username of UID" oninput="renderAccountList()" />
+        <div id="account-list" class="account-list" style="margin-top:12px;"></div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="pos-footer">
+  <span>WERKDONALDS · WERKPAY POS BANK</span>
+  <span id="clock"></span>
+</footer>
+
   </section>
 
   <div id="receipt-modal" class="modal-back hidden" onclick="closeReceipt(event)">
@@ -553,7 +561,6 @@
     const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
     let currentUser = null;
-    let sessionToken = sessionStorage.getItem('werkpay_session_token') || null;
     let authMode = 'password';
     let allAccounts = [];
     let refreshTimer = null;
@@ -579,7 +586,14 @@
       return user && (user.is_admin === true || user.is_admin === 'true' || user.is_admin === 1);
     }
 
-    function setAuthMode(mode) { authMode = 'password'; }
+    function setAuthMode(mode) {
+      authMode = mode;
+      document.getElementById('auth-pass').classList.toggle('active', mode === 'password');
+      document.getElementById('auth-pin').classList.toggle('active', mode === 'pin');
+      document.getElementById('login-secret-label').textContent = mode === 'pin' ? 'Pincode' : 'Wachtwoord';
+      document.getElementById('login-secret').value = '';
+      document.getElementById('login-secret').focus();
+    }
 
     function setAmount(id, value) {
       document.getElementById(id).value = value;
@@ -661,50 +675,67 @@
     }
 
     async function refreshCurrentUser(silent) {
-      if (!sessionToken) return;
-      const { data, error } = await db.rpc('werkpay_get_session', { p_session_token: sessionToken });
-      if (error || !data?.success) {
-        if (!silent) alert('WerkPay-sessie verlopen. Log opnieuw in.');
-        handleLogout(false);
+      if (!currentUser) return;
+      const { data, error } = await db
+        .from('bank_accounts')
+        .select('*')
+        .eq('id', currentUser.id)
+        .maybeSingle();
+      if (error) {
+        if (!silent) alert('Kon jouw account niet verversen: ' + error.message);
         return;
       }
-      currentUser = data.account;
-      renderWallet();
+      if (data) {
+        currentUser = data;
+        renderWallet();
+      }
     }
 
     async function handleLogin(event) {
       event.preventDefault();
       const username = document.getElementById('login-username').value.trim();
-      const password = document.getElementById('login-secret').value;
-      if (!username || !password) { alert('Vul gebruikersnaam en wachtwoord in.'); return; }
-      const { data, error } = await db.rpc('werkpay_login', { p_username: username, p_password: password });
-      if (error || !data?.success) {
-        alert('Ongeldige inloggegevens.');
+      const secret = document.getElementById('login-secret').value;
+      if (!username || !secret) {
+        alert('Vul gebruikersnaam en ' + (authMode === 'pin' ? 'pincode' : 'wachtwoord') + ' in.');
         return;
       }
-      sessionToken = data.session_token;
-      sessionStorage.setItem('werkpay_session_token', sessionToken);
-      currentUser = data.account;
+      let query = db.from('bank_accounts').select('*').eq('username', username);
+      if (authMode === 'pin') query = query.eq('pin_code', secret);
+      else query = query.eq('password', secret);
+      const { data, error } = await query.maybeSingle();
+      if (error) {
+        alert('Inloggen mislukt: ' + error.message);
+        return;
+      }
+      if (!data) {
+        alert('Ongeldige inloggegevens. Controleer gebruikersnaam en ' + (authMode === 'pin' ? 'pincode' : 'wachtwoord') + '.');
+        return;
+      }
+      currentUser = data;
       document.getElementById('login-screen').classList.add('hidden');
       document.getElementById('app-screen').classList.remove('hidden');
-      document.getElementById('session-label').textContent = (currentUser.account_holder || currentUser.username) + ' · @' + currentUser.username;
-      document.getElementById('tab-manager').classList.toggle('hidden', !isAdmin(currentUser));
-      renderWallet(); renderHistory(); showView('wallet'); startAutoRefresh();
-      if (isAdmin(currentUser)) loadAllAccounts();
-      document.getElementById('login-secret').value = '';
+      document.getElementById('session-label').textContent =
+        (data.account_holder || data.username) + ' · @' + data.username;
+      const managerTab = document.getElementById('tab-manager');
+      if (isAdmin(data)) managerTab.classList.remove('hidden');
+      else managerTab.classList.add('hidden');
+      renderWallet();
+      renderHistory();
+      showView('wallet');
+      startAutoRefresh();
+      if (isAdmin(data)) loadAllAccounts();
     }
 
-    function handleLogout(confirmIt = true) {
-      if (confirmIt && !confirm('Wil je uitloggen?')) return;
-      currentUser = null; sessionToken = null; stopAutoRefresh();
-      sessionStorage.removeItem('werkpay_session_token');
+    function handleLogout() {
+      if (!confirm('Wil je uitloggen?')) return;
+      currentUser = null;
+      stopAutoRefresh();
       document.getElementById('app-screen').classList.add('hidden');
       document.getElementById('login-screen').classList.remove('hidden');
       document.getElementById('login-secret').value = '';
-      resetUserForm(); showView('wallet');
+      resetUserForm();
+      showView('wallet');
     }
-
-    function handleLogoutOld() {}
 
     function showView(name) {
       document.getElementById('view-wallet').classList.toggle('hidden', name !== 'wallet');
@@ -724,73 +755,164 @@
       document.getElementById('card-uid').textContent = formatCardUid(currentUser.card_uid);
       document.getElementById('card-holder').textContent = currentUser.account_holder || currentUser.username;
       document.getElementById('card-balance').textContent = god ? '€ ∞' : euro(currentUser.balance);
-      document.getElementById('deposit-panel').classList.toggle('hidden', !god);
+      document.getElementById('deposit-panel').classList.toggle('hidden', god);
       document.getElementById('transfer-hint').textContent = god
-        ? 'GOD MODE: beheerder kan saldo uitgeven zonder eigen saldo te verlagen.'
+        ? 'GOD MODE: er gaat niets van jouw saldo af. De ontvanger krijgt het bedrag wel.'
         : 'Het bedrag wordt van jouw saldo afgeschreven en bij de ontvanger gestort.';
     }
 
-    async function handleAdminBalanceAdjust(event) {
+    async function handleDeposit(event) {
       event.preventDefault();
-      if (!currentUser || !isAdmin(currentUser) || !sessionToken) { alert('Alleen beheerders mogen saldo aanpassen.'); return; }
-      const target = document.getElementById('deposit-target').value.trim();
+      if (!currentUser) return;
+      if (isAdmin(currentUser)) {
+        alert('Beheerders hebben oneindig saldo en kunnen niet opwaarderen.');
+        return;
+      }
       const amount = toNumber(document.getElementById('deposit-amount').value);
-      if (!target || amount === 0) { alert('Kies een account en een bedrag anders dan 0.'); return; }
-      const { data, error } = await db.rpc('werkpay_admin_adjust_balance', {
-        p_session_token: sessionToken, p_target: target, p_delta: amount, p_note: 'Admin saldo-aanpassing'
-      });
-      if (error || !data?.success) { alert('Saldo aanpassen mislukt: ' + (data?.message || error?.message || 'onbekende fout')); return; }
-      document.getElementById('deposit-target').value = '';
+      if (amount <= 0) {
+        alert('Voer een geldig bedrag groter dan 0 in.');
+        return;
+      }
+      const newBalance = toNumber(currentUser.balance) + amount;
+      const { error } = await db
+        .from('bank_accounts')
+        .update({ balance: newBalance })
+        .eq('id', currentUser.id);
+      if (error) {
+        alert('Opwaarderen mislukt: ' + error.message);
+        return;
+      }
       document.getElementById('deposit-amount').value = '';
-      await refreshCurrentUser(true); await loadAllAccounts();
-      showReceipt('Admin saldo-aanpassing', currentUser.username, data.account.username, amount, 'Beheerder');
+      await refreshCurrentUser();
+      saveHistoryItem({
+        label: 'Opwaardering',
+        amount: amount,
+        when: new Date().toLocaleString('nl-NL')
+      });
+      showReceipt('Opwaardering', currentUser.username, currentUser.username, amount, 'Saldo bijgeboekt');
     }
 
     async function findRecipient(query) {
       const value = String(query || '').trim();
-      const { data, error } = await db.rpc('werkpay_find_account', { p_query: value });
-      if (error) return { error };
-      return { data: data?.account || null };
+      const uid = value.replace(/\s+/g, '');
+      const byName = await db.from('bank_accounts').select('*').eq('username', value).maybeSingle();
+      if (byName.error) return { error: byName.error };
+      if (byName.data) return { data: byName.data };
+      const byUid = await db.from('bank_accounts').select('*').eq('card_uid', uid).maybeSingle();
+      if (byUid.error) return { error: byUid.error };
+      return { data: byUid.data };
     }
 
     async function handleTransfer(event) {
       event.preventDefault();
-      if (!currentUser || !sessionToken) return;
+      if (!currentUser) return;
       const targetQuery = document.getElementById('transfer-username').value.trim();
       const amount = toNumber(document.getElementById('transfer-amount').value);
       const note = document.getElementById('transfer-note').value.trim();
-      if (!targetQuery || amount <= 0) { alert('Vul een ontvanger en geldig bedrag in.'); return; }
-      const { data, error } = await db.rpc('werkpay_transfer', {
-        p_session_token: sessionToken, p_recipient: targetQuery, p_amount: amount, p_note: note
-      });
-      if (error || !data?.success) { alert('Overboeking mislukt: ' + (data?.message || error?.message || 'onbekende fout')); return; }
+      if (!targetQuery) {
+        alert('Vul de gebruikersnaam of het kaart-UID van de ontvanger in.');
+        return;
+      }
+      if (amount <= 0) {
+        alert('Voer een geldig bedrag groter dan 0 in.');
+        return;
+      }
+      const found = await findRecipient(targetQuery);
+      if (found.error) {
+        alert('Ontvanger zoeken mislukt: ' + found.error.message);
+        return;
+      }
+      const recipient = found.data;
+      if (!recipient) {
+        alert('Geen account gevonden met username of kaart-UID "' + targetQuery + '".');
+        return;
+      }
+      if (String(recipient.id) === String(currentUser.id) ||
+          String(recipient.username).toLowerCase() === String(currentUser.username).toLowerCase()) {
+        alert('Je kunt geen geld naar jezelf overboeken.');
+        return;
+      }
+      const senderIsAdmin = isAdmin(currentUser);
+      if (!senderIsAdmin && toNumber(currentUser.balance) < amount) {
+        alert('Onvoldoende saldo voor deze overboeking.');
+        return;
+      }
+      const ok = confirm(
+        'Bevestig overboeking van ' + euro(amount) + ' naar ' +
+        (recipient.account_holder || recipient.username) + '?'
+      );
+      if (!ok) return;
+
+      if (!senderIsAdmin) {
+        const { error: debitError } = await db
+          .from('bank_accounts')
+          .update({ balance: toNumber(currentUser.balance) - amount })
+          .eq('id', currentUser.id);
+        if (debitError) {
+          alert('Afschrijven mislukt: ' + debitError.message);
+          return;
+        }
+      }
+
+      const { error: creditError } = await db
+        .from('bank_accounts')
+        .update({ balance: toNumber(recipient.balance) + amount })
+        .eq('id', recipient.id);
+      if (creditError) {
+        alert('Storten bij ontvanger mislukt: ' + creditError.message);
+        return;
+      }
+
       document.getElementById('transfer-username').value = '';
       document.getElementById('transfer-amount').value = '';
       document.getElementById('transfer-note').value = '';
-      await refreshCurrentUser(true);
-      saveHistoryItem({ label: 'Overboeking naar ' + data.recipient.username + (note ? ' · ' + note : ''), amount: -amount, when: new Date().toLocaleString('nl-NL') });
-      showReceipt(isAdmin(currentUser) ? 'GOD MODE overboeking' : 'Overboeking', currentUser.username, data.recipient.username, amount, note);
+      await refreshCurrentUser();
+      if (isAdmin(currentUser)) await loadAllAccounts();
+      saveHistoryItem({
+        label: 'Overboeking naar ' + recipient.username + (note ? ' · ' + note : ''),
+        amount: -amount,
+        when: new Date().toLocaleString('nl-NL')
+      });
+      showReceipt(
+        senderIsAdmin ? 'GOD MODE overboeking' : 'Overboeking',
+        currentUser.username,
+        recipient.username,
+        amount,
+        note
+      );
     }
 
     async function handleChangePin(event) {
       event.preventDefault();
-      if (!currentUser || !sessionToken) return;
+      if (!currentUser) return;
       const pin = document.getElementById('new-pin').value.trim();
-      if (!/^\d{4,8}$/.test(pin)) { alert('Pincode moet 4 t/m 8 cijfers zijn.'); return; }
-      const { data, error } = await db.rpc('werkpay_change_pin', { p_session_token: sessionToken, p_new_pin: pin });
-      if (error || !data?.success) { alert('Pincode wijzigen mislukt: ' + (data?.message || error?.message || 'onbekende fout')); return; }
+      if (pin.length < 4) {
+        alert('Pincode moet minstens 4 tekens zijn.');
+        return;
+      }
+      const { error } = await db.from('bank_accounts').update({ pin_code: pin }).eq('id', currentUser.id);
+      if (error) {
+        alert('Pincode wijzigen mislukt: ' + error.message);
+        return;
+      }
       document.getElementById('new-pin').value = '';
+      await refreshCurrentUser();
       alert('Pincode is bijgewerkt.');
     }
 
     async function loadAllAccounts() {
-      if (!currentUser || !isAdmin(currentUser) || !sessionToken) return;
-      const { data, error } = await db.rpc('werkpay_admin_list_accounts', { p_session_token: sessionToken });
-      if (error || !data?.success) { alert('Accounts laden mislukt: ' + (data?.message || error?.message || 'onbekende fout')); return; }
-      allAccounts = data.accounts || [];
+      const { data, error } = await db
+        .from('bank_accounts')
+        .select('*')
+        .order('username');
+      if (error) {
+        alert('Accounts laden mislukt: ' + error.message);
+        return;
+      }
+      allAccounts = data || [];
       const admins = allAccounts.filter(isAdmin);
-      const customers = allAccounts.filter(a => !isAdmin(a));
-      const total = customers.reduce((sum, a) => sum + toNumber(a.balance), 0);
+      const customers = allAccounts.filter(function (a) { return !isAdmin(a); });
+      const total = customers.reduce(function (sum, a) { return sum + toNumber(a.balance); }, 0);
       document.getElementById('stat-count').textContent = String(allAccounts.length);
       document.getElementById('stat-admins').textContent = String(admins.length);
       document.getElementById('stat-total').textContent = euro(total);
@@ -847,10 +969,10 @@
     function editUser(account) {
       document.getElementById('user-id').value = account.id;
       document.getElementById('user-username').value = account.username || '';
-      document.getElementById('user-password').value = '';
+      document.getElementById('user-password').value = account.password || '';
       document.getElementById('user-holder').value = account.account_holder || '';
       document.getElementById('user-card').value = account.card_uid || '';
-      document.getElementById('user-pin').value = '';
+      document.getElementById('user-pin').value = account.pin_code || '';
       document.getElementById('user-balance').value = toNumber(account.balance);
       document.getElementById('user-admin').checked = isAdmin(account);
       document.getElementById('user-form-title').textContent = 'Gebruiker bewerken';
@@ -872,10 +994,12 @@
 
     async function handleCreateOrUpdateUser(event) {
       event.preventDefault();
-      if (!currentUser || !isAdmin(currentUser) || !sessionToken) { alert('Alleen beheerders mogen accounts beheren.'); return; }
-      const id = document.getElementById('user-id').value || null;
+      if (!isAdmin(currentUser)) {
+        alert('Alleen beheerders mogen accounts beheren.');
+        return;
+      }
+      const id = document.getElementById('user-id').value;
       const payload = {
-        id,
         username: document.getElementById('user-username').value.trim(),
         password: document.getElementById('user-password').value,
         account_holder: document.getElementById('user-holder').value.trim(),
@@ -884,24 +1008,61 @@
         balance: toNumber(document.getElementById('user-balance').value),
         is_admin: document.getElementById('user-admin').checked
       };
-      const { data, error } = await db.rpc('werkpay_admin_save_account', {
-        p_session_token: sessionToken, p_id: payload.id, p_username: payload.username, p_password: payload.password || null,
-        p_account_holder: payload.account_holder, p_card_uid: payload.card_uid, p_pin_code: payload.pin_code,
-        p_balance: payload.balance, p_is_admin: payload.is_admin
-      });
-      if (error || !data?.success) { alert('Opslaan mislukt: ' + (data?.message || error?.message || 'onbekende fout')); return; }
+      if (!payload.username) {
+        alert('Username is verplicht.');
+        return;
+      }
+      let error;
+      if (id) {
+        const result = await db.from('bank_accounts').update(payload).eq('id', id);
+        error = result.error;
+      } else {
+        const result = await db.from('bank_accounts').insert(payload);
+        error = result.error;
+      }
+      if (error) {
+        alert((id ? 'Bijwerken' : 'Aanmaken') + ' mislukt: ' + error.message);
+        return;
+      }
       alert(id ? 'Gebruiker bijgewerkt.' : 'Nieuwe gebruiker aangemaakt.');
-      resetUserForm(); await loadAllAccounts();
+      resetUserForm();
+      await loadAllAccounts();
+      await refreshCurrentUser();
     }
 
     async function quickMoney(id, delta) {
-      if (!currentUser || !isAdmin(currentUser) || !sessionToken) { alert('Alleen beheerders mogen dit doen.'); return; }
-      const { data, error } = await db.rpc('werkpay_admin_adjust_balance', {
-        p_session_token: sessionToken, p_target: String(id), p_delta: Number(delta), p_note: 'Snelknop beheer'
-      });
-      if (error || !data?.success) { alert('Saldo aanpassen mislukt: ' + (data?.message || error?.message || 'onbekende fout')); return; }
+      if (!isAdmin(currentUser)) {
+        alert('Alleen beheerders mogen dit doen.');
+        return;
+      }
+      const { data, error } = await db
+        .from('bank_accounts')
+        .select('*')
+        .eq('id', id)
+        .maybeSingle();
+      if (error) {
+        alert('Account ophalen mislukt: ' + error.message);
+        return;
+      }
+      if (!data) {
+        alert('Account niet gevonden.');
+        return;
+      }
+      if (isAdmin(data)) {
+        alert('Beheerderssaldo kan niet met snelknoppen worden aangepast.');
+        return;
+      }
+      const newBalance = toNumber(data.balance) + delta;
+      const { error: updateError } = await db
+        .from('bank_accounts')
+        .update({ balance: newBalance })
+        .eq('id', id);
+      if (updateError) {
+        alert('Saldo aanpassen mislukt: ' + updateError.message);
+        return;
+      }
       await loadAllAccounts();
-      if (currentUser && String(currentUser.id) === String(id)) await refreshCurrentUser(true);
+      if (currentUser && String(currentUser.id) === String(id)) await refreshCurrentUser();
     }
 
     function tickClock() {
@@ -912,5 +1073,6 @@
     tickClock();
     setInterval(tickClock, 1000);
   </script>
+
 </body>
 </html>
